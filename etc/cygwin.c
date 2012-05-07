@@ -6,7 +6,7 @@ static char rcsid[] = "$Id$";
 #define LCCDIR "target/"
 #endif
 
-char *suffixes[] = { ".c", ".i", ".s;.asm;.dasm", ".o", ".out", 0 };
+char *suffixes[] = { ".c", ".i", ".dasm", ".o", ".out", 0 };
 char inputs[256] = "";
 char *cpp[] = { LCCDIR "cpp",
 	"-U__GNUC__", "-D_POSIX_SOURCE", "-D__STDC__=1", "-D__STRICT_ANSI__",
