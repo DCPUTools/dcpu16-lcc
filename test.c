@@ -1,6 +1,5 @@
-#include "test.h"
-#include "dcpulib.h"
-#include "color.h"
+#include <dcpulib.h>
+#include <color.h>
 
 int main()
 {

@@ -1,1 +1,1 @@
-target/lcc -f -target=dcpu16 -S test.c
+target/lcc -f -target=dcpu16 -S -o test.dasm test.c

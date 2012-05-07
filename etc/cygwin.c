@@ -13,14 +13,14 @@ char *cpp[] = { LCCDIR "cpp",
 	"-Dunix", "-Di386", "-Dlinux",
 	"-D__unix__", "-D__i386__", "-D__linux__", "-D__signed__=signed",
 	"$1", "$2", "$3", 0 };
-char *include[] = {"-I" LCCDIR "include", "-I.", 0 };
+char *include[] = {"-Iinclude/dcpu16", 0};
 char *com[] = {LCCDIR "rcc", "-target=x86/linux", "$1", "$2", "$3", 0 };
 char *as[] = {};
 char *ld[] = {
 	/*  0 */ "/usr/bin/ld", "-m", "elf_i386", "-dynamic-linker",
 	/*  4 */ "/lib/ld-linux.so.2", "-o", "$3",
 	/*  7 */ "/usr/lib/crt1.o", "/usr/lib/crti.o",
-	/*  9 */ LCCDIR "/gcc/crtbegin.o", 
+	/*  9 */ LCCDIR "/gcc/crtbegin.o",
                  "$1", "$2",
 	/* 12 */ "-L" LCCDIR,
 	/* 13 */ "-llcc",
