@@ -1,4 +1,5 @@
 # $Id$
+BUILDDIR=target
 A=.a
 O=.o
 E=

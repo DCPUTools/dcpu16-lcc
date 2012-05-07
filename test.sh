@@ -1,0 +1,1 @@
+target/lcc -f -target=dcpu16 -S test.c

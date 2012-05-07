@@ -17,7 +17,10 @@ doinclude(Tokenrow *trp)
 
 	trp->tp += 1;
 	if (trp->tp>=trp->lp)
+	{
+		error(ERROR, "line21");
 		goto syntax;
+	}
 	if (trp->tp->type!=STRING && trp->tp->type!=LT) {
 		len = trp->tp - trp->bp;
 		expandrow(trp, "<include>");
@@ -40,11 +43,14 @@ doinclude(Tokenrow *trp)
 			trp->tp++;
 		}
 		angled = 1;
-	} else
+	} else {
+		error(ERROR, "line47");
 		goto syntax;
+	}
 	trp->tp += 2;
-	if (trp->tp < trp->lp || len==0)
-		goto syntax;
+	if (trp->tp < trp->lp || len==0) {
+		//goto syntax;
+	}
 	fname[len] = '\0';
 	if (fname[0]=='/') {
 		fd = fopen(fname, "r");

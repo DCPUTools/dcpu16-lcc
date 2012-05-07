@@ -498,9 +498,9 @@ static void progbeg(int argc, char *argv[]) {
     reg[RGY] = mkreg("Y",RGY,1,IREG);
     reg[RGZ] = mkreg("Z",RGZ,1,IREG);
     reg[RGI] = mkreg("I",RGI,1,IREG);
-    
+
     regw = mkwildcard(reg);
-    
+
     tmask[IREG] = TMP_REG;
     vmask[IREG] = VAR_REG;
     tmask[FREG] = 0;
@@ -546,7 +546,7 @@ static void target(Node p) {
     debug({
         fprintf(stderr, "target called on %x (%s)\n", p, opname(p->op));
         if (p->syms[RX])
-            fprintf(stderr, "    sclass: %d, name: %s\n", p->syms[RX]->sclass, p->syms[RX]->name);           
+            fprintf(stderr, "    sclass: %d, name: %s\n", p->syms[RX]->sclass, p->syms[RX]->name);
         if (p->kids[0]) {
             fprintf(stderr, "    %x (%s)\n", p->kids[0], opname(p->kids[0]->op));
             if (p->kids[0]->syms[RX])
@@ -594,7 +594,7 @@ static void target(Node p) {
     debug({
         fprintf(stderr, "target returning on %x (%s)\n", p, opname(p->op));
         if (p->syms[RX])
-            fprintf(stderr, "    sclass: %d, name: %s\n", p->syms[RX]->sclass, p->syms[RX]->name);           
+            fprintf(stderr, "    sclass: %d, name: %s\n", p->syms[RX]->sclass, p->syms[RX]->name);
         if (p->kids[0]) {
             fprintf(stderr, "    %x (%s)\n", p->kids[0], opname(p->kids[0]->op));
             if (p->kids[0]->syms[RX])
@@ -642,7 +642,7 @@ static void emit2(Node p) {
         case CNST+I:
             intval = p->syms[0]->u.c.v.i;
             if ( intval < 0 )
-                emithex((short)intval);                
+                emithex((short)intval);
             else
                 print("%d", intval);
             break;
@@ -664,7 +664,6 @@ static void emit2(Node p) {
             print("JSR ");
             emitasm(p->kids[0], _addr_NT);
             print("\n");
-
             if (argoffset > 3)
                 popstack(argoffset - 3, "popping arguments from stack");
             break;
@@ -691,12 +690,12 @@ static void emit2(Node p) {
             else {
                 s = p->syms[0];
             }
-   
+
             assert(s->x.name);
             debug(fprintf(stderr, "addrg emit2 %s->%s\n", s->x.name, p->syms[RX]->name));
 
             name = (char*)malloc(strlen(s->x.name));
-            offset = (char*)malloc(strlen(s->x.name)); 
+            offset = (char*)malloc(strlen(s->x.name));
             for( i = 0; s->x.name[i]; i++ ) {
                 if ( s->x.name[i] == '+' )
                     break;
@@ -717,7 +716,7 @@ static void emit2(Node p) {
                 emithex(atoi(s->x.name));
                 print("]\n");
             }
-            
+
             break;
 */
         case ADDRF+P:
@@ -784,11 +783,11 @@ static void function(Symbol f, Symbol caller[], Symbol callee[], int ncalls) {
 | Pushed Register Arguments
 |
 +---------------------------
-|                           
+|
 | Locals
 |                           <-- Frame Pointer (J)
 +---------------------------
-| Previous Frame Pointer    
+| Previous Frame Pointer
 +---------------------------
 |
 | Outgoing Arguments
@@ -806,7 +805,7 @@ static void function(Symbol f, Symbol caller[], Symbol callee[], int ncalls) {
     usedmask[FREG] = 0;
     freemask[IREG] = TMP_REG | (1<<RGA) | (1<<RGB) | (1<<RGC);
     freemask[FREG] = 0;
-    
+
     maxargoffset = 0;
     offset = maxoffset = 0;
     pushregargs[0] = pushregargs[1] = pushregargs[2] = 0;
@@ -816,7 +815,7 @@ static void function(Symbol f, Symbol caller[], Symbol callee[], int ncalls) {
         Symbol q = caller[i];
 
         assert(q);
-        
+
         switch(i) {
             case 0:
                 if (ncalls || f->type->type->op != VOID) {
@@ -838,7 +837,7 @@ static void function(Symbol f, Symbol caller[], Symbol callee[], int ncalls) {
                 p->x.offset = q->x.offset = 0;
                 p->x.name = q->x.name = r->x.name;
                 p->x.regnode = r->x.regnode;
-                p->x.regnode->vbl = p;            
+                p->x.regnode->vbl = p;
                 q->x = p->x;
                 q->type = p->type;
                 break;
@@ -857,7 +856,7 @@ static void function(Symbol f, Symbol caller[], Symbol callee[], int ncalls) {
 
     maxargoffset = maxargoffset > 2?maxargoffset - 3:0;
     debug(fprintf(stderr, "function: gencode done.  maxargoffset = %d\n", maxargoffset));
-    
+
     offset = maxoffset;
     for (i=0; callee[i]; i++) {
         Symbol p = callee[i];
@@ -1021,9 +1020,9 @@ static void popstack(int n, const char* note) {
     if (n > 2)
         print("ADD SP, %d    ;%s\n", n, note);
     else if (n == 2)
-        print("SET POP, POP ;%s\n", note);
+        print("SET EX, POP ;%s\n", note);
     else if (n == 1)
-        print("SET POP, SP  ;%s\n", note);
+        print("SET EX, POP  ;%s\n", note);
 }
 
 static int addrgop(Node p, int defaultcost) {
@@ -1042,7 +1041,7 @@ static int addrgop(Node p, int defaultcost) {
         }
         name++;
     }
-    
+
     if (nope)
         return LBURG_MAX;
     return defaultcost;
@@ -1099,7 +1098,7 @@ static int ncmemop(Node p, int defaultcost) {
     assert(generic(p->op) == ASGN);
     assert(p->kids[0]);
     assert(p->kids[1]);
-  
+
     if (generic(p->kids[1]->kids[1]->op) == INDIR && sametree(p->kids[0], p->kids[1]->kids[1]->kids[0]))
         return LBURG_MAX;
     else
@@ -1168,3 +1167,4 @@ Interface dcpu16IR = {
 }
 };
 static char rcsid[] = "$Id: $";
+

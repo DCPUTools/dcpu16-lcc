@@ -110,7 +110,7 @@ eval(Tokenrow *trp, int kw)
 	if (kw==KIFDEF || kw==KIFNDEF) {
 		if (trp->lp - trp->bp != 4 || trp->tp->type!=NAME) {
 			error(ERROR, "Syntax error in #ifdef/#ifndef");
-			return 0;
+			//return 0;
 		}
 		np = lookup(trp->tp, 0);
 		return (kw==KIFDEF) == (np && np->flag&(ISDEFINED|ISMAC));
