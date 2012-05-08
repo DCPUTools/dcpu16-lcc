@@ -8,7 +8,16 @@ SET PC, _crash
 SET I, J
 SET J, SP    ;set new frame pointer
 SET PUSH, I  ;save previous frame pointer
+SET A, _global_listener
+JSR _global_setinterruptlistener
 SET A, 0
 :_L3
+SET J, POP   ;restore previous frame pointer
+SET PC, POP
+:_global_listener
+SET I, J
+SET J, SP    ;set new frame pointer
+SET PUSH, I  ;save previous frame pointer
+:_L4
 SET J, POP   ;restore previous frame pointer
 SET PC, POP

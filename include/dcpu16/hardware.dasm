@@ -10,16 +10,13 @@ SET PC, POP
 ;
 :_global_getdeviceinformations
 
-HWQ A
 SET Z, B
-SHL Z, 16
-ADD Z, A
-SET [B], Z
-SET [B+1], C
-SET Z, Y
-SHL Z, 16
-ADD Z, X
-SET [B+2], Z
+HWQ A
+SET [Z], A
+SET [1+Z], B
+SET [2+Z], C
+SET [3+Z], X
+SET [4+Z], Y
 SET PC, POP
 ;
 ; extern void triggerhardwareinterrupt(int);

@@ -1,6 +1,10 @@
 #ifndef __STDIO
 #define __STDIO
 
+// Types
+typedef void (*interruptlistener)(int);
+
+// Methods
 extern int printf( const char*, ... );
 extern char* itoa( int, char*, int );
 extern char* utoa( unsigned, char*, int );
@@ -14,7 +18,7 @@ extern void clearcolor();
 extern unsigned* getdispcur();          //Get display cursor - returns a pointer between 0x8000 and 0x817f
 extern unsigned* setdispcur(unsigned*); //Set display cursor
 
-extern void setinterruptlistener(void* pointer);
+extern void setinterruptlistener(interruptlistener pointer);
 extern void* getinterruptlistener();
 extern void triggerinterrupt(int code);
 
