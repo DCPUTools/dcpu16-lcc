@@ -5,38 +5,10 @@ JSR _global_main
 :_crash
 SET PC, _crash
 :_global_main
-SET PUSH, 0  ;making room on stack for locals
 SET I, J
 SET J, SP    ;set new frame pointer
 SET PUSH, I  ;save previous frame pointer
-SET A, 8806
-JSR _global_srand
-JSR _global_rand
-SET [J], A
-SET A, _L4
-SET B, [J]
-JSR _global_printf
-JSR _global_rand
-SET [J], A
-SET A, _L5
-SET B, [J]
-JSR _global_printf
 SET A, 0
 :_L3
 SET J, POP   ;restore previous frame pointer
-SET EX, POP  ;popping locals and register arguments from stack
 SET PC, POP
-:_L5
-DAT 0x0052,0x0061,0x006E,0x0064,0x003A,0x0020,0x0025,0x0064,0x000A,0x0000 ;string
-:_L4
-DAT 0x0052,0x0061,0x006E,0x0064,0x003A,0x0020,0x0025,0x0064,0x000A,0x0000 ;string
-:_scratch0
-DAT 0
-:_scratch1
-DAT 0
-:_scratch2
-DAT 0
-:_scratch3
-DAT 0
-:_scratch4
-DAT 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0

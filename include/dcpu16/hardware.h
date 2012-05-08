@@ -4,9 +4,9 @@
 // Types
 typedef struct
 {
-    unsigned int id;
+    unsigned int id[2];
     unsigned int version;
-    unsigned int manufacturer;
+    unsigned int manufacturer[2];
 } device;
 
 // Methods

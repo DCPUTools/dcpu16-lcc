@@ -370,3 +370,14 @@ SET PC, POP
 
 INT A
 SET PC, POP
+
+:_scratch0
+DAT 0
+:_scratch1
+DAT 0
+:_scratch2
+DAT 0
+:_scratch3
+DAT 0
+:_scratch4
+DAT 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0

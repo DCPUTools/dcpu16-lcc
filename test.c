@@ -7,12 +7,5 @@
 
 int main()
 {
-    int r;
-    srand(0x2266);
-    r = rand();
-    printf("Rand: %d\n", r);
-    r = rand();
-    printf("Rand: %d\n", r);
-
     return EXIT_SUCCESS;
 }
