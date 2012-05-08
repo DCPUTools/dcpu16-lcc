@@ -1,0 +1,30 @@
+;
+; extern int connectedhardwaredevices();
+;
+:_global_connectedhardwaredevices
+
+HWN A
+SET PC, POP
+;
+; extern void getdeviceinformations(int, device);
+;
+:_global_getdeviceinformations
+
+HWQ A
+SET Z, B
+SHL Z, 16
+ADD Z, A
+SET [B], Z
+SET [B+2], C
+SET Z, Y
+SHL Z, 16
+ADD Z, X
+SET [B+2], Z
+SET PC, POP
+;
+; extern void triggerhardwareinterrupt(int);
+;
+:_global_triggerhardwareinterrupt
+
+HWI A
+SET PC, POP

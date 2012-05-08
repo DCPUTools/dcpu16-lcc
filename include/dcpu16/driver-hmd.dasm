@@ -5,3 +5,14 @@
 
 HWI 0x0000
 SET A, B
+SET PC, POP
+;
+; extern void mediaparameters(drive);
+;
+:_global_mediaparameters
+
+HWI 0x0001
+SET [A], B
+SET [A+1], C
+SET [A+2], X
+SET PC, POP

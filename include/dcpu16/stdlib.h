@@ -22,10 +22,6 @@ extern void free(void*);
 extern int getmem(unsigned index);
 extern void putmem(unsigned index, int value);
 
-extern void setinterruptlistener(void* pointer);
-extern void* getinterruptlistener();
-extern void triggerinterrupt(int code);
-
 extern void jump(void* pointer);
 
 #endif

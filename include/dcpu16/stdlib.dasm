@@ -184,35 +184,6 @@ SET PC, POP
 SET [A], B
 SET PC, POP
 ;
-; extern void setinterruptlistener(void* pointer);
-;
-:_global_setinterruptlistener
-
-SET [__interruptlistenerptr], A
-IAS __interruptlistener
-SET PC, POP
-:__interruptlistener
-IFN [__interruptlistenerptr], 0
-JSR [__interruptlistenerptr]
-SET A, POP
-SET PC, POP
-:__interruptlistenerptr
-DAT 0
-;
-; extern void* getinterruptlistener();
-;
-:_global_getinterruptlistener
-
-IAG A
-SET PC, POP
-;
-; extern void triggerinterrupt(int code);
-;
-:_global_triggerinterrupt
-
-INT A
-SET PC, POP
-;
 ; extern void jump(void* pointer)
 ;
 :_global_jump

@@ -9,31 +9,157 @@ SET PUSH, 0  ;making room on stack for locals
 SET I, J
 SET J, SP    ;set new frame pointer
 SET PUSH, I  ;save previous frame pointer
-JSR _global_mediapresent
-SET [J], A
-SET A, _L3
-SET B, [J]
-JSR _global_printf
-IFE [J], 0
-SET PC, _L4
-SET A, _L6
-JSR _global_printf
 SET PC, _L5
 :_L4
+JSR _global_connectedhardwaredevices
+SET [J], A
 SET A, _L7
+SET B, [J]
 JSR _global_printf
-:_L5
+SET A, _L8
+JSR _global_printf
+SET A, 1
+JSR _global_printdevice
 SET A, 0
-:_L2
+JSR _global_setdispcur
+:_L5
+SET PC, _L4
+SET A, 0
+:_L3
 SET J, POP   ;restore previous frame pointer
 SET EX, POP  ;popping locals and register arguments from stack
 SET PC, POP
-:_L7
-DAT 0x004E,0x006F,0x0020,0x0064,0x0072,0x0069,0x0076,0x0065,0x0021,0x000A,0x0000 ;string
-:_L6
+:_global_devices
+SUB SP, 2    ;making room on stack for locals
+SET I, J
+SET J, SP    ;set new frame pointer
+SET PUSH, I  ;save previous frame pointer
+JSR _global_connectedhardwaredevices
+SET [J], A
+SET [1+J], 0
+SET PC, _L13
+:_L10
+SET A, [1+J]
+JSR _global_printdevice
+:_L11
+ADD [1+J], 1
+:_L13
+IFG [J], 0x7FFE
+SET PC, _L10_nu
+IFG [1+J], 0x7FFE
+SET PC, _L10
+:_L10_nn
+IFG [J], [1+J]
+SET PC, _L10
+SET PC, _L10_done
+:_L10_nu
+IFG [1+J], 0x7FFE
+SET PC, _L10_nn
+SET PC, _L10_done
+:_L10_done
+:_L9
+SET J, POP   ;restore previous frame pointer
+SET EX, POP ;popping locals and register arguments from stack
+SET PC, POP
+:_global_printdevice
+SET PUSH, A
+SUB SP, 6    ;making room on stack for locals
+SET I, J
+SET J, SP    ;set new frame pointer
+SET PUSH, I  ;save previous frame pointer
+SET A, [6+J]
+SET Z, J
+SET Y, 3
+ADD Y, J
+;starting block copy (Z Y 3)
+SET [Z], [Y]
+SET [1+Z], [1+Y]
+SET [2+Z], [2+Y]
+SET B, J
+JSR _global_getdeviceinformations
+SET A, _L15
+SET B, [3+J]
+JSR _global_printf
+SET A, _L16
+SET Z, 3
+ADD Z, J
+ADD Z, 1
+SET B, [Z]
+JSR _global_printf
+SET A, _L17
+SET Z, 3
+ADD Z, J
+ADD Z, 2
+SET B, [Z]
+JSR _global_printf
+:_L14
+SET J, POP   ;restore previous frame pointer
+ADD SP, 7    ;popping locals and register arguments from stack
+SET PC, POP
+:_global_drives
+SUB SP, 7    ;making room on stack for locals
+SET I, J
+SET J, SP    ;set new frame pointer
+SET PUSH, I  ;save previous frame pointer
+JSR _global_mediapresent
+SET [6+J], A
+IFE [6+J], 0
+SET PC, _L19
+SET Z, J
+SET Y, 3
+ADD Y, J
+;starting block copy (Z Y 3)
+SET [Z], [Y]
+SET [1+Z], [1+Y]
+SET [2+Z], [2+Y]
+SET A, J
+JSR _global_mediaparameters
+SET A, _L21
+JSR _global_printf
+SET A, _L22
+SET B, [3+J]
+JSR _global_printf
+SET A, _L23
+SET Z, 3
+ADD Z, J
+ADD Z, 1
+SET B, [Z]
+JSR _global_printf
+SET A, _L24
+SET Z, 3
+ADD Z, J
+ADD Z, 2
+SET B, [Z]
+JSR _global_printf
+SET PC, _L20
+:_L19
+SET A, _L25
+JSR _global_printf
+:_L20
+:_L18
+SET J, POP   ;restore previous frame pointer
+ADD SP, 7    ;popping locals and register arguments from stack
+SET PC, POP
+:_L25
+DAT 0x004E,0x006F,0x0020,0x0064,0x0072,0x0069,0x0076,0x0065,0x0021,0x0000 ;string
+:_L24
+DAT 0x0057,0x0072,0x0069,0x0074,0x0065,0x0061,0x0062,0x006C,0x0065,0x0020,0x0020,0x0020,0x003D,0x0020,0x0025,0x0064,0x000A,0x0000 ;string
+:_L23
+DAT 0x004E,0x0075,0x006D,0x0020,0x0073,0x0065,0x0063,0x0074,0x006F,0x0072,0x0073,0x0020,0x003D,0x0020,0x0025,0x0064,0x000A,0x0000 ;string
+:_L22
+DAT 0x0057,0x006F,0x0072,0x0064,0x002F,0x0073,0x0065,0x0063,0x0020,0x0020,0x0020,0x0020,0x003D,0x0020,0x0025,0x0064,0x000A,0x0000 ;string
+:_L21
 DAT 0x0044,0x0072,0x0069,0x0076,0x0065,0x0021,0x000A,0x0000 ;string
-:_L3
-DAT 0x0050,0x0072,0x0065,0x0073,0x0065,0x006E,0x0074,0x003F,0x0020,0x0025,0x0064,0x000A,0x0000 ;string
+:_L17
+DAT 0x0044,0x0065,0x0076,0x0069,0x0063,0x0065,0x0020,0x006D,0x0061,0x006E,0x002E,0x003A,0x0020,0x0020,0x0020,0x0020,0x0030,0x0078,0x0025,0x0078,0x000A,0x0000 ;string
+:_L16
+DAT 0x0044,0x0065,0x0076,0x0069,0x0063,0x0065,0x0020,0x0076,0x0065,0x0072,0x0073,0x0069,0x006F,0x006E,0x003A,0x0020,0x0030,0x0078,0x0025,0x0078,0x000A,0x0000 ;string
+:_L15
+DAT 0x0044,0x0065,0x0076,0x0069,0x0063,0x0065,0x0020,0x0049,0x0044,0x003A,0x0020,0x0020,0x0020,0x0020,0x0020,0x0020,0x0030,0x0078,0x0025,0x0078,0x000A,0x0000 ;string
+:_L8
+DAT 0x002D,0x002D,0x002D,0x002D,0x002D,0x002D,0x002D,0x002D,0x002D,0x002D,0x002D,0x002D,0x002D,0x002D,0x002D,0x002D,0x002D,0x002D,0x000A,0x0000 ;string
+:_L7
+DAT 0x0043,0x006F,0x006E,0x006E,0x0065,0x0063,0x0074,0x0065,0x0064,0x0020,0x0064,0x0065,0x0076,0x0069,0x0063,0x0065,0x0073,0x003A,0x0020,0x0025,0x0064,0x000A,0x0000 ;string
 :_scratch0
 DAT 0
 :_scratch1

@@ -34,5 +34,6 @@ typedef struct {
 
 // Methods
 extern int mediapresent();
+extern void mediaparameters(drive);
 
 #endif
