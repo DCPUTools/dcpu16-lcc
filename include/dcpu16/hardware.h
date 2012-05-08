@@ -11,7 +11,7 @@ typedef struct
 
 // Methods
 extern int connectedhardwaredevices();
-extern void getdeviceinformations(int, device);
+extern void getdeviceinformations(int, device*);
 extern void triggerhardwareinterrupt(int);
 
 #endif

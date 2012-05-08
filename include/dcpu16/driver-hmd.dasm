@@ -7,7 +7,7 @@ HWI 0x0000
 SET A, B
 SET PC, POP
 ;
-; extern void mediaparameters(drive);
+; extern void mediaparameters(drive*);
 ;
 :_global_mediaparameters
 

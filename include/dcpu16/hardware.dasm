@@ -6,7 +6,7 @@
 HWN A
 SET PC, POP
 ;
-; extern void getdeviceinformations(int, device);
+; extern void getdeviceinformations(int, device*);
 ;
 :_global_getdeviceinformations
 
@@ -15,7 +15,7 @@ SET Z, B
 SHL Z, 16
 ADD Z, A
 SET [B], Z
-SET [B+2], C
+SET [B+1], C
 SET Z, Y
 SHL Z, 16
 ADD Z, X

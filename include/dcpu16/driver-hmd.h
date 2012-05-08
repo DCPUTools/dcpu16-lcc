@@ -27,13 +27,13 @@
 
 // Types
 typedef struct {
-    int words_per_sector;
-    int sectors_num;
+    unsigned int words_per_sector;
+    unsigned int sectors_num;
     int writeable;
 } drive;
 
 // Methods
 extern int mediapresent();
-extern void mediaparameters(drive);
+extern void mediaparameters(drive*);
 
 #endif
