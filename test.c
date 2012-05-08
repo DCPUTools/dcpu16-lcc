@@ -1,17 +1,28 @@
 #include <dcpulib.h>
 #include <color.h>
 
-void listener(int code);
+#ifndef _H_TEST
+#define _H_TEST
+
+#define TEST 25
+
+#if TEST == 15
+
+#define TEST2 12
+
+#else
+
+#define TEST2 13
+
+#endif
+
+#endif
 
 int main()
 {
-    setinterruptlistener(&listener);
-    triggerinterrupt(21);
+    int i = TEST;
+    int j = TEST2;
+    boolean b = TRUE;
 
     return EXIT_SUCCESS;
-}
-
-void listener(int code)
-{
-    printf("Code: %d\n", code);
 }

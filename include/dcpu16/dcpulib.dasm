@@ -4,6 +4,8 @@ DAT 0x8000
 DAT 0x8000
 :__dispoffset_end
 DAT 0x817F
+:__dispcolor
+DAT 0
 :__isprintf
 DAT 0
 :__dispinit_flag
@@ -147,7 +149,8 @@ ADD X, A
 SET PC, __printf_loop
 :__printf_putc
 SET A, [Y]
-BOR A, 0xF000
+;BOR A, 0xF000
+BOR A, [__dispcolor]
 JSR _global_putchar
 ADD X, 1
 ADD Y, 1
@@ -442,6 +445,27 @@ SET PC, POP
 :_global_jump
 
 JSR A
+;
+; extern char getchar();
+;
+:_global_getchar
+
+SET A, [0x9000]
+SET PC, POP
+;
+; extern void setcolor(unsigned int color);
+;
+:_global_setcolor
+
+SET [__dispcolor], A
+SET PC, POP
+;
+; extern void clearcolor();
+;
+:_global_clearcolor
+
+SET [__dispcolor], 0
+SET PC, POP
 ;
 ; extern void free(void*)
 ;

@@ -62,7 +62,7 @@ struct	fsm {
 	START,	{ '\'' },	CC1,
 	START,	{ '/' },	COM1,
 	START,	{ EOFC },	S_EOF,
-	START,	{ '\n' },	S_NL,
+	START,	{ '\n', '\r' },	S_NL,
 	START,	{ '-' },	MINUS1,
 	START,	{ '+' },	PLUS1,
 	START,	{ '<' },	LT1,
@@ -122,7 +122,7 @@ struct	fsm {
 	ST2,	{ C_XX },	ST2,
 	ST2,	{ '"' },	ACT(STRING, S_SELF),
 	ST2,	{ '\\' },	ST3,
-	ST2,	{ '\n' },	S_STNL,
+	ST2,	{ '\n', '\r' },	S_STNL,
 	ST2,	{ EOFC },	S_EOFSTR,
 
 	/* saw \ in string */

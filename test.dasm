@@ -5,31 +5,18 @@ JSR _global_main
 :_crash
 SET PC, _crash
 :_global_main
+SUB SP, 3    ;making room on stack for locals
 SET I, J
 SET J, SP    ;set new frame pointer
 SET PUSH, I  ;save previous frame pointer
-SET A, _global_listener
-JSR _global_setinterruptlistener
-SET A, 21
-JSR _global_triggerinterrupt
+SET [2+J], 25
+SET [1+J], 13
+SET [J], 1
 SET A, 0
 :_L1
 SET J, POP   ;restore previous frame pointer
+ADD SP, 3    ;popping locals and register arguments from stack
 SET PC, POP
-:_global_listener
-SET PUSH, A
-SET I, J
-SET J, SP    ;set new frame pointer
-SET PUSH, I  ;save previous frame pointer
-SET A, _L3
-SET B, [J]
-JSR _global_printf
-:_L2
-SET J, POP   ;restore previous frame pointer
-SET EX, POP  ;popping locals and register arguments from stack
-SET PC, POP
-:_L3
-DAT 0x0043,0x006F,0x0064,0x0065,0x003A,0x0020,0x0025,0x0064,0x000A,0x0000 ;string
 :_scratch0
 DAT 0
 :_scratch1
