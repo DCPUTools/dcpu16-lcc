@@ -1,0 +1,7 @@
+;
+; extern int mediapresent();
+;
+:_global_mediapresent
+
+HWI 0x0000
+SET A, B

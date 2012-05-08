@@ -1,28 +1,21 @@
-#include <dcpulib.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <color.h>
-
-#ifndef _H_TEST
-#define _H_TEST
-
-#define TEST 25
-
-#if TEST == 15
-
-#define TEST2 12
-
-#else
-
-#define TEST2 13
-
-#endif
-
-#endif
+#include <driver-hmd.h>
 
 int main()
 {
-    int i = TEST;
-    int j = TEST2;
-    boolean b = TRUE;
+    int present = mediapresent();
+
+    printf("Present? %d\n", present);
+    if (present)
+    {
+        printf("Drive!\n");
+    }
+    else
+    {
+        printf("No drive!\n");
+    }
 
     return EXIT_SUCCESS;
 }

@@ -18,7 +18,6 @@ doinclude(Tokenrow *trp)
 	trp->tp += 1;
 	if (trp->tp>=trp->lp)
 	{
-		error(ERROR, "line21");
 		goto syntax;
 	}
 	if (trp->tp->type!=STRING && trp->tp->type!=LT) {
@@ -44,12 +43,11 @@ doinclude(Tokenrow *trp)
 		}
 		angled = 1;
 	} else {
-		error(ERROR, "line47");
 		goto syntax;
 	}
 	trp->tp += 2;
 	if (trp->tp < trp->lp || len==0) {
-		//goto syntax;
+		goto syntax;
 	}
 	fname[len] = '\0';
 	if (fname[0]=='/') {

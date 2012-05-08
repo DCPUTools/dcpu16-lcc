@@ -1,0 +1,234 @@
+;
+; extern void* malloc(unsigned)
+;
+:_global_malloc
+IFE 0, [__heapinit_flag]
+JSR __heapinit
+SET B, __heaphead
+IFE B, 0
+SET PC, __malloc_error
+SET I, A            ;I = requested size
+SET A, [B]          ;A = pointer to current block
+:__malloc_loop
+IFG [1+A], I
+SET PC, __malloc_doit
+IFE [1+A], I
+SET PC, __malloc_doit
+SET B, A            ;B = pointer to previous block (or head)
+SET A, [A]
+IFE A, 0
+SET PC, __malloc_error
+SET PC, __malloc_loop
+:__malloc_doit
+SET C, A
+ADD C, 2
+ADD C, [1+A]        ;C = pointer to current block's footer
+SET PUSH, [1+A]
+SUB PEEK, I
+IFG 8, PEEK
+SET PC, __malloc_doit2
+SUB PEEK, 4         ;PEEK = new block size
+SET [C], PEEK       ;store new block's size in footer
+SET [1+C], A        ;set new block's prev -> current block
+SUB C, PEEK
+SUB C, 4            ;update C (current block shrank)
+SET [1+A], I        ;store current block's size in header
+SET [C], I          ;store current block's size in footer
+SET [2+C], [A]      ;set new block's next
+SET [3+C], PEEK     ;store new block's size in header
+SET [A], C
+ADD [A], 2          ;set current block's next -> new block
+:__malloc_doit2
+SET I, [A]
+SET [A], 1          ;flag current block as used
+SET [1+C], 1        ;flag current block as used
+SET [B], I          ;set previous block's next = current block's next
+IFE I, 0
+SET PC, __malloc_doit3
+ADD I, [1+I]
+SET [3+I], B        ;set reverse link
+:__malloc_doit3
+ADD A, 2
+SET EX, POP
+SET PC, __malloc_done
+:__malloc_error
+SET A, 0
+:__malloc_done
+SET PC, POP
+;
+; extern void free(void*)
+;
+:_global_free
+
+IFE 0, [__heapinit_flag]
+SET PC, POP
+IFG A, 0x8000
+SET PC, POP
+IFG __heaphead, A
+SET PC, POP
+SET C, A
+SUB A, 4                ;A = pointer to left block's footer
+SET B, [3+A]            ;B = current block size
+ADD C, B                ;C = pointer to current block's footer
+IFN B, [C]              ;sanity checks
+SET PC, POP             ;
+IFN [2+A], 1            ;
+SET PC, POP             ;
+IFN [1+C], 1            ;
+SET PC, POP             ;
+SET I, [__heaphead]
+SET [2+A], I            ;current->next = *head
+SET [1+C], __heaphead   ;current->prev = head
+IFE I, 0
+SET PC, __free_cont
+ADD I, [1+I]
+ADD I, 3
+SET [I], A
+ADD [I], 2              ;current->next->prev = current
+:__free_cont
+SET [__heaphead], A
+ADD [__heaphead], 2
+:__free_mergeright
+IFE C, 0x7FFE           ;no right block
+SET PC, __free_mergeleft
+IFE [2+C], 1            ;right block used
+SET PC, __free_mergeleft
+SET PUSH, X
+SET PUSH, [2+C]         ;push(right->next)
+SET I, C                ;I = right->prev
+ADD I, [3+C]            ;
+ADD I, 5                ;
+SET X, [I]              ;X = *(right->prev)
+SET [X], PEEK           ;right->prev->next = right->next
+SET X, POP              ;X = *(right->next)
+IFE X, 0
+SET PC, __free_mergeright_cont
+ADD X, [1+X]            ;X = right->next->prev
+ADD X, 3                ;
+SET [X], [I]            ;right->next->prev = right->prev
+:__free_mergeright_cont
+SET X, B                ;X = new block size
+ADD X, [3+C]            ;
+ADD X, 4                ;
+SET [3+A], X            ;store new size in header
+SET [I], __heaphead     ;current->prev = head
+SUB I, 1                
+SET [I], X              ;store new size in footer
+SET B, X                ;update B/C for mergeleft
+SET C, I                ;
+SET X, POP
+:__free_mergeleft
+IFG __heaphead, A       ;no left block
+SET PC, POP
+IFE [1+A], 1            ;left block is not free
+SET PC, POP
+SET PUSH, X
+SET X, A                ;X = left->next
+SUB X, [A]              ;
+SUB X, 2                ;
+SET PUSH, X             ;push(left->next)
+SET X, [X]              ;X = *(left->next)
+SET I, [1+A]            ;I = *(left->prev)
+SET [I], X              ;left->prev->next = left->next
+IFE X, 0
+SET PC, __free_mergeleft_cont
+ADD X, [1+I]            ;X = left->next->prev
+ADD X, 3                ;
+SET [X], [1+A]          ;left->next->prev = left->prev
+:__free_mergeleft_cont
+SET X, B                ;X = new block size
+ADD X, [A]              ;
+ADD X, 4                ;
+SET I, POP              ;I = left->next
+SET [1+I], X            ;store new size in header
+SET [C], X              ;store new size in footer
+SET [I], [2+A]          ;copy current->next to new header
+SET [__heaphead], I     ;point head to new header
+SET X, POP
+SET PC, POP
+
+:__heapinit_flag
+DAT 0
+:__heapinit2
+SET [__heaphead], I
+SET [I], 0
+SET [1+I], 0x8000
+SUB [1+I], I
+SUB [1+I], 4
+SET [0x7FFE], [1+I]
+SET [0x7FFF], __heaphead
+SET [__heapinit_flag], 1
+SET PC, POP
+:__heapinit
+SET I, PC
+ADD I, 4
+SET PC, __heapinit2
+:__heaphead
+DAT 0                                                                                                                         
+:__heap1stblk
+DAT 0
+:__heap1stsize
+DAT 0   
+;
+; extern int getmem(unsigned index);
+;
+:_global_getmem
+
+SET A, [A]
+SET PC, POP
+;
+; extern void putmem(unsigned index, int value);
+;
+:_global_putmem
+
+SET [A], B
+SET PC, POP
+;
+; extern void setinterruptlistener(void* pointer);
+;
+:_global_setinterruptlistener
+
+SET [__interruptlistenerptr], A
+IAS __interruptlistener
+SET PC, POP
+:__interruptlistener
+IFN [__interruptlistenerptr], 0
+JSR [__interruptlistenerptr]
+SET A, POP
+SET PC, POP
+:__interruptlistenerptr
+DAT 0
+;
+; extern void* getinterruptlistener();
+;
+:_global_getinterruptlistener
+
+IAG A
+SET PC, POP
+;
+; extern void triggerinterrupt(int code);
+;
+:_global_triggerinterrupt
+
+INT A
+SET PC, POP
+;
+; extern void jump(void* pointer)
+;
+:_global_jump
+
+JSR A
+;
+; extern void setcolor(unsigned int color);
+;
+:_global_setcolor
+
+SET [__dispcolor], A
+SET PC, POP
+;
+; extern void clearcolor();
+;
+:_global_clearcolor
+
+SET [__dispcolor], 0
+SET PC, POP
