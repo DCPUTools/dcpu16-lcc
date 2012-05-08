@@ -5,72 +5,10 @@ JSR _global_main
 :_crash
 SET PC, _crash
 :_global_main
-SET PUSH, 0  ;making room on stack for locals
 SET I, J
 SET J, SP    ;set new frame pointer
 SET PUSH, I  ;save previous frame pointer
-JSR _global_connectedhardwaredevices
-SET [J], A
-IFG 0, 0x7FFE
-SET PC, _L3_nu
-IFG [J], 0x7FFE
-SET PC, _L3
-:_L3_nn
-IFG 0, [J]
-SET PC, _L3
-IFE 0, [J]
-SET PC, _L3
-SET PC, _L3_done
-:_L3_nu
-IFG [J], 0x7FFE 
-SET PC, _L3_nn
-SET PC, _L3_done
-:_L3_done
 SET A, 0
-JSR _global_printdevice
-SET A, 0
-JSR _global_setdispcur
 :_L3
-SET A, 0
-:_L2
 SET J, POP   ;restore previous frame pointer
-SET EX, POP  ;popping locals and register arguments from stack
 SET PC, POP
-:_global_printdevice
-SET PUSH, A
-SUB SP, 5    ;making room on stack for locals
-SET I, J
-SET J, SP    ;set new frame pointer
-SET PUSH, I  ;save previous frame pointer
-SET A, [5+J]
-SET B, J
-JSR _global_getdeviceinformations
-SET A, _L6
-SET Z, J
-ADD Z, 1
-SET B, [Z]
-SET C, [J]
-JSR _global_printf
-SET A, _L7
-SET Z, J
-ADD Z, 2
-SET B, [Z]
-JSR _global_printf
-SET A, _L8
-SET Z, J
-ADD Z, 3
-SET Y, Z
-ADD Y, 1
-SET B, [Y]
-SET C, [Z]
-JSR _global_printf
-:_L5
-SET J, POP   ;restore previous frame pointer
-ADD SP, 6    ;popping locals and register arguments from stack
-SET PC, POP
-:_L8
-DAT 0x004D,0x0061,0x006E,0x0075,0x0066,0x0061,0x0063,0x0074,0x0075,0x0072,0x0065,0x0072,0x003A,0x0020,0x0025,0x0078,0x0025,0x0078,0x0000 ;string
-:_L7
-DAT 0x0056,0x0065,0x0072,0x0073,0x0069,0x006F,0x006E,0x003A,0x0020,0x0020,0x0020,0x0020,0x0020,0x0020,0x0025,0x0078,0x0000 ;string
-:_L6
-DAT 0x0049,0x0044,0x003A,0x0020,0x0020,0x0020,0x0020,0x0020,0x0020,0x0020,0x0020,0x0020,0x0020,0x0020,0x0025,0x0078,0x0025,0x0078,0x0000 ;string
