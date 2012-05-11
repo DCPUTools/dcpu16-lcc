@@ -74,20 +74,18 @@ typedef struct swtch *Swtch;
 
 typedef struct symbol *Symbol;
 
-typedef struct coord
-{
-    char *file;
-    unsigned x, y;
+typedef struct coord {
+	char *file;
+	unsigned x, y;
 } Coordinate;
 typedef struct table *Table;
 
-typedef union value
-{
-    long i;
-    unsigned long u;
-    long double d;
-    void *p;
-    void (*g)(void);
+typedef union value {
+	long i;
+	unsigned long u;
+	long double d;
+	void *p;
+	void (*g)(void);
 } Value;
 typedef struct tree *Tree;
 
@@ -95,304 +93,259 @@ typedef struct type *Type;
 
 typedef struct field *Field;
 
-typedef struct
-{
-    unsigned printed :1;
-    unsigned marked;
-    unsigned short typeno;
-    void *xt;
+typedef struct {
+	unsigned printed:1;
+	unsigned marked;
+	unsigned short typeno;
+	void *xt;
 } Xtype;
 
 #include "config.h"
-typedef struct metrics
-{
-    unsigned char size, align, outofline;
+typedef struct metrics {
+	unsigned char size, align, outofline;
 } Metrics;
-typedef struct interface
-{
-    Metrics charmetric;
-    Metrics shortmetric;
-    Metrics intmetric;
-    Metrics longmetric;
-    Metrics longlongmetric;
-    Metrics floatmetric;
-    Metrics doublemetric;
-    Metrics longdoublemetric;
-    Metrics ptrmetric;
-    Metrics structmetric;
-    unsigned little_endian :1;
-    unsigned mulops_calls :1;
-    unsigned wants_callb :1;
-    unsigned wants_argb :1;
-    unsigned left_to_right :1;
-    unsigned wants_dag :1;
-    unsigned unsigned_char :1;
-    unsigned byte_width :8;
-    void (*address)(Symbol p, Symbol q, long n);
-    void (*blockbeg)(Env *);
-    void (*blockend)(Env *);
-    void (*defaddress)(Symbol);
-    void (*defconst)(int suffix, int size, Value v);
-    void (*defstring)(int n, char *s);
-    void (*defsymbol)(Symbol);
-    void (*emit)(Node);void (*export)(Symbol);
-    void (*function)(Symbol, Symbol[], Symbol[], int);
-    Node (*gen)(Node);
-    void (*global)(Symbol);
-    void (*import)(Symbol);
-    void (*local)(Symbol);
-    void (*progbeg)(int argc, char *argv[]);
-    void (*progend)(void);
-    void (*segment)(int);
-    void (*space)(int);
-    void (*stabblock)(int, int, Symbol*);
-    void (*stabend)(Coordinate *, Symbol, Coordinate **, Symbol *, Symbol *);
-    void (*stabfend)(Symbol, int);
-    void (*stabinit)(char *, int, char *[]);
-    void (*stabline)(Coordinate *);
-    void (*stabsym)(Symbol);
-    void (*stabtype)(Symbol);
-    Xinterface x;
+typedef struct interface {
+	Metrics charmetric;
+	Metrics shortmetric;
+	Metrics intmetric;
+	Metrics longmetric;
+	Metrics longlongmetric;
+	Metrics floatmetric;
+	Metrics doublemetric;
+	Metrics longdoublemetric;
+	Metrics ptrmetric;
+	Metrics structmetric;
+   	unsigned little_endian:1;
+	unsigned mulops_calls:1;
+	unsigned wants_callb:1;
+	unsigned wants_argb:1;
+	unsigned left_to_right:1;
+	unsigned wants_dag:1;
+	unsigned unsigned_char:1;
+    unsigned byte_width:8;
+void (*address)(Symbol p, Symbol q, long n);
+void (*blockbeg)(Env *);
+void (*blockend)(Env *);
+void (*defaddress)(Symbol);
+void (*defconst)  (int suffix, int size, Value v);
+void (*defstring)(int n, char *s);
+void (*defsymbol)(Symbol);
+void (*emit)    (Node);
+void (*export)(Symbol);
+void (*function)(Symbol, Symbol[], Symbol[], int);
+Node (*gen)     (Node);
+void (*global)(Symbol);
+void (*import)(Symbol);
+void (*local)(Symbol);
+void (*progbeg)(int argc, char *argv[]);
+void (*progend)(void);
+void (*segment)(int);
+void (*space)(int);
+void (*stabblock)(int, int, Symbol*);
+void (*stabend)  (Coordinate *, Symbol, Coordinate **, Symbol *, Symbol *);
+void (*stabfend) (Symbol, int);
+void (*stabinit) (char *, int, char *[]);
+void (*stabline) (Coordinate *);
+void (*stabsym)  (Symbol);
+void (*stabtype) (Symbol);
+	Xinterface x;
 } Interface;
-typedef struct binding
-{
-    char *name;
-    Interface *ir;
+typedef struct binding {
+	char *name;
+	Interface *ir;
 } Binding;
 
 extern Binding bindings[];
 extern Interface *IR;
-typedef struct
-{
-    List blockentry;
-    List blockexit;
-    List entry;
-    List exit;
-    List returns;
-    List points;
-    List calls;
-    List end;
+typedef struct {
+	List blockentry;
+	List blockexit;
+	List entry;
+	List exit;
+	List returns;
+	List points;
+	List calls;
+	List end;
 } Events;
 
-enum
-{
+enum {
 #define xx(a,b,c,d,e,f,g) a=b,
 #define yy(a,b,c,d,e,f,g)
 #include "token.h"
-    LAST
+	LAST
 };
-struct node
-{
-    short op;
-    short count;
-    Symbol syms[3];
-    Node kids[2];
-    Node link;
-    Xnode x;
+struct node {
+	short op;
+	short count;
+ 	Symbol syms[3];
+	Node kids[2];
+	Node link;
+	Xnode x;
 };
-enum
-{
-    F = FLOAT, I = INT, U = UNSIGNED, P = POINTER, V = VOID, B = STRUCT
+enum {
+	F=FLOAT,
+	I=INT,
+	U=UNSIGNED,
+	P=POINTER,
+	V=VOID,
+	B=STRUCT
 };
 #define gop(name,value) name=value<<4,
 #define op(name,type,sizes)
 
-enum
-{
+enum {
 #include "ops.h"
-    LASTOP
+	LASTOP
 };
 
 #undef gop
 #undef op
-enum
-{
-    CODE = 1, BSS, DATA, LIT
-};
-enum
-{
-    PERM = 0, FUNC, STMT
-};
-struct list
-{
-    void *x;
-    List link;
+enum { CODE=1, BSS, DATA, LIT };
+enum { PERM=0, FUNC, STMT };
+struct list {
+	void *x;
+	List link;
 };
 
-struct code
-{
-    enum
-    {
-        Blockbeg,
-        Blockend,
-        Local,
-        Address,
-        Defpoint,
-        Label,
-        Start,
-        Gen,
-        Jump,
-        Switch
-    } kind;
-    Code prev, next;
-    union
-    {
-        struct
-        {
-            int level;
-            Symbol *locals;
-            Table identifiers, types;
-            Env x;
-        } block;
-        Code begin;
-        Symbol var;
+struct code {
+	enum { Blockbeg, Blockend, Local, Address, Defpoint,
+	       Label,    Start,    Gen,   Jump,    Switch
+	} kind;
+	Code prev, next;
+	union {
+		struct {
+			int level;
+			Symbol *locals;
+			Table identifiers, types;
+			Env x;
+		} block;
+		Code begin;
+		Symbol var;
 
-        struct
-        {
-            Symbol sym;
-            Symbol base;
-            long offset;
-        } addr;
-        struct
-        {
-            Coordinate src;
-            int point;
-        } point;
-        Node forest;
-        struct
-        {
-            Symbol sym;
-            Symbol table;
-            Symbol deflab;
-            int size;
-            long *values;
-            Symbol *labels;
-        } swtch;
+		struct {
+			Symbol sym;
+			Symbol base;
+			long offset;
+		} addr;
+		struct {
+			Coordinate src;
+			int point;
+		} point; 
+		Node forest;
+		struct {
+			Symbol sym;
+			Symbol table;
+			Symbol deflab;
+			int size;
+			long *values;
+			Symbol *labels;
+		} swtch;
 
-    } u;
+	} u;
 };
-struct swtch
-{
-    Symbol sym;
-    int lab;
-    Symbol deflab;
-    int ncases;
-    int size;
-    long *values;
-    Symbol *labels;
+struct swtch {
+	Symbol sym;
+	int lab;
+	Symbol deflab;
+	int ncases;
+	int size;
+	long *values;
+	Symbol *labels;
 };
-struct symbol
-{
-    char *name;
-    int scope;
-    Coordinate src;
-    Symbol up;
-    List uses;
-    int sclass;
-    unsigned structarg :1;
+struct symbol {
+	char *name;
+	int scope;
+	Coordinate src;
+	Symbol up;
+	List uses;
+	int sclass;
+	unsigned structarg:1;
 
-    unsigned addressed :1;
-    unsigned computed :1;
-    unsigned temporary :1;
-    unsigned generated :1;
-    unsigned defined :1;
-    Type type;
-    float ref;
-    union
-    {
-        struct
-        {
-            int label;
-            Symbol equatedto;
-        } l;
-        struct
-        {
-            unsigned cfields :1;
-            unsigned vfields :1;
-            Table ftab; /* omit */
-            Field flist;
-        } s;
-        int value;
-        Symbol *idlist;
-        struct
-        {
-            Value min, max;
-        } limits;
-        struct
-        {
-            Value v;
-            Symbol loc;
-        } c;
-        struct
-        {
-            Coordinate pt;
-            int label;
-            int ncalls;
-            Symbol *callee;
-        } f;
-        int seg;
-        Symbol alias;
-        struct
-        {
-            Node cse;
-            int replace;
-            Symbol next;
-        } t;
-    } u;
-    Xsymbol x;
+	unsigned addressed:1;
+	unsigned computed:1;
+	unsigned temporary:1;
+	unsigned generated:1;
+	unsigned defined:1;
+	Type type;
+	float ref;
+	union {
+		struct {
+			int label;
+			Symbol equatedto;
+		} l;
+		struct {
+			unsigned cfields:1;
+			unsigned vfields:1;
+			Table ftab;		/* omit */
+			Field flist;
+		} s;
+		int value;
+		Symbol *idlist;
+		struct {
+			Value min, max;
+		} limits;
+		struct {
+			Value v;
+			Symbol loc;
+		} c;
+		struct {
+			Coordinate pt;
+			int label;
+			int ncalls;
+			Symbol *callee;
+		} f;
+		int seg;
+		Symbol alias;
+		struct {
+			Node cse;
+			int replace;
+			Symbol next;
+		} t;
+	} u;
+	Xsymbol x;
 };
-enum
-{
-    CONSTANTS = 1, LABELS, GLOBAL, PARAM, LOCAL
-};
-struct tree
-{
-    int op;
-    Type type;
-    Tree kids[2];
-    Node node;
-    union
-    {
-        Value v;
-        Symbol sym;
+enum { CONSTANTS=1, LABELS, GLOBAL, PARAM, LOCAL };
+struct tree {
+	int op;
+	Type type;
+	Tree kids[2];
+	Node node;
+	union {
+		Value v;
+		Symbol sym;
 
-        Field field;
-    } u;
+		Field field;
+	} u;
 };
-enum
-{
-    AND = 38 << 4,
-    NOT = 39 << 4,
-    OR = 40 << 4,
-    COND = 41 << 4,
-    RIGHT = 42 << 4,
-    FIELD = 43 << 4
+enum {
+	AND=38<<4,
+	NOT=39<<4,
+	OR=40<<4,
+	COND=41<<4,
+	RIGHT=42<<4,
+	FIELD=43<<4
 };
-struct type
-{
-    int op;
-    Type type;
-    int align;
-    int size;
-    union
-    {
-        Symbol sym;
-        struct
-        {
-            unsigned oldstyle :1;
-            Type *proto;
-        } f;
-    } u;
-    Xtype x;
+struct type {
+	int op;
+	Type type;
+	int align;
+	int size;
+	union {
+		Symbol sym;
+		struct {
+			unsigned oldstyle:1;
+			Type *proto;
+		} f;
+	} u;
+	Xtype x;
 };
-struct field
-{
-    char *name;
-    Type type;
-    int offset;
-    short bitsize;
-    short lsb;
-    Field link;
+struct field {
+	char *name;
+	Type type;
+	int offset;
+	short bitsize;
+	short lsb;
+	Field link;
 };
 extern int assignargs;
 extern int prunetemps;
@@ -468,7 +421,7 @@ extern Type voidtype;
 extern Type unsignedptr;
 extern Type signedptr;
 extern Type widechar;
-extern void *allocate(unsigned long n, unsigned a);
+extern void  *allocate(unsigned long n, unsigned a);
 extern void deallocate(unsigned a);
 extern void *newarray(unsigned long m, unsigned long n, unsigned a);
 extern void walk(Tree e, int tlab, int flab);
@@ -538,15 +491,15 @@ extern int getchr(void);
 extern int gettok(void);
 
 extern void emitcode(void);
-extern void gencode(Symbol[], Symbol[]);
+extern void gencode (Symbol[], Symbol[]);
 extern void fprint(FILE *f, const char *fmt, ...);
 extern char *stringf(const char *, ...);
 extern void check(Node);
 extern void print(const char *, ...);
 
 extern List append(void *x, List list);
-extern int length(List list);
-extern void *ltov(List *list, unsigned a);
+extern int  length(List list);
+extern void *ltov (List *list, unsigned a);
 extern void init(int, char *[]);
 
 extern Type typename(void);
@@ -594,7 +547,7 @@ extern void enterscope(void);
 extern void exitscope(void);
 extern Symbol findlabel(int);
 extern Symbol findtype(Type);
-extern void foreach(Table, int, void(*)(Symbol, void *), void *);
+extern void foreach(Table, int, void (*)(Symbol, void *), void *);
 extern Symbol genident(int, Type, int);
 extern int genlabel(int);
 extern Symbol install(const char *, Table *, int, int);
@@ -614,7 +567,7 @@ extern char *opname(int);
 extern int *printed(int);
 extern void printtree(Tree, int);
 extern Tree root(Tree);
-extern Tree texpr(Tree(*)(int), int, int);
+extern Tree texpr(Tree (*)(int), int, int);
 extern Tree tree(int, Type, Tree, Tree);
 
 extern void type_init(int, char *[]);
@@ -623,7 +576,7 @@ extern Type signedint(Type);
 
 extern int hasproto(Type);
 extern void outtype(Type, FILE *);
-extern void printdecl(Symbol p, Type ty);
+extern void printdecl (Symbol p, Type ty);
 extern void printproto(Symbol p, Symbol args[]);
 extern char *typestring(Type ty, char *id);
 extern Field fieldref(const char *name, Type ty);

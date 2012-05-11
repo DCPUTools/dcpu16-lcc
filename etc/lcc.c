@@ -12,6 +12,7 @@ static char rcsid[] = "$Id$";
 #include <ctype.h>
 #include <signal.h>
 
+
 #ifndef TEMPDIR
 #define TEMPDIR "/tmp"
 #endif

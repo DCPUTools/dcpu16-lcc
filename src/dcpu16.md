@@ -27,6 +27,7 @@ static void defstring(int, char *);
 static void defsymbol(Symbol); 
 static void doarg(Node); 
 static void emit2(Node); 
+static void dcpu_emit(Node p);
 static void export(Symbol); 
 static void clobber(Node); 
 static void function(Symbol, Symbol [], Symbol [], int);
@@ -57,7 +58,7 @@ static Symbol reg[32];
 static Symbol regw;
 static short iscaddr = 1;
 
-const char hexdigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+const char hexdigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
 %}
 
@@ -74,6 +75,7 @@ const char hexdigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A'
 %term ARGI1=1061
 %term ARGP1=1063
 %term ARGU1=1062
+%term ARGU2=2086
 
 %term ASGNB=57
 %term ASGNF1=1073
@@ -265,7 +267,7 @@ stmt:   ASGNF1(addr,bval)               "SET [%0], %1\n" 1
 stmt:   ASGNI1(addr,bval)               "SET [%0], %1\n" 1
 stmt:   ASGNI2(addr,bval)               "SET [%0], %1\n" 1
 stmt:   ASGNU1(addr,bval)               "SET [%0], %1\n" 1
-stmt:   ASGNU2(addr,bval)               "SET [%0], %1\n" 1
+stmt:   ASGNU2(addr,bval)               "# write 32bits value\n" 1
 stmt:   ASGNP1(addr,bval)               "SET [%0], %1\n" 1
 
 reg:    BCOMI1(cm)                      "SET %c, 0xffff\nXOR %c, %0\n" 3
@@ -570,10 +572,12 @@ stmt:   NEU1(bval,bval)                 "IFN %0, %1\nSET PC, %a\n" 4
 stmt:   ARGF1(reg)                      "#\n" a->x.argno < 3?0:LBURG_MAX
 stmt:   ARGI1(reg)                      "#\n" a->x.argno < 3?0:LBURG_MAX
 stmt:   ARGU1(reg)                      "#\n" a->x.argno < 3?0:LBURG_MAX
+stmt:   ARGU2(reg)                      "#\n" a->x.argno < 3?0:LBURG_MAX
 stmt:   ARGP1(reg)                      "#\n" a->x.argno < 3?0:LBURG_MAX
 stmt:   ARGF1(bval)                     "#\n" 2
 stmt:   ARGI1(bval)                     "#\n" 2
 stmt:   ARGU1(bval)                     "#\n" 2
+stmt:   ARGU2(bval)                     "#\n" 2
 stmt:   ARGP1(bval)                     "#\n" 2
 stmt:   ASGNB(reg,INDIRB(reg))          "# block assign\n" 1
 
@@ -736,7 +740,7 @@ static void emit2(Node p) {
     long double fltval;
     int op = specific(p->op);
     int opsz = opsize(p->op);
-    int i, j;
+    int i, j, k;
     Symbol s;
 
     switch(op) {
@@ -790,6 +794,55 @@ static void emit2(Node p) {
                     print("J");
             }
             break;
+        case ADDRF+P:
+            if (p->syms[0]->x.offset)
+                print("%d+J", p->syms[0]->x.offset);
+            else
+                print("J");
+            break;
+        case ASGN+U:
+            assert(p->kids[0]);
+            assert(p->kids[1]);
+            if(opsz == 2)
+            {
+                if(p->kids[1]->syms[0]->scope == CONSTANTS)
+                {
+                    print(";name %s; offset %d\n", p->kids[0]->syms[0]->x.name, p->kids[0]->syms[0]->x.offset);
+                
+                    /*i = p->kids[1]->syms[0]->u.c.v.i;
+                    j = (i & 0xffff0000) >> 16;
+                    k = p->kids[0]->syms[0]->x.offset;
+                    
+                    if(k)
+                    {
+                        print("SET [%d+J], ", k);
+                    }
+                    else
+                    {
+                        print("SET [J], ", k);
+                    }
+                    emithex(j);
+                    print("\nSET [%d+J], ", k + 1);
+                    emithex(i & 0xffff);
+                    print("\n");*/
+                }
+            }
+            break;
+        case ASGN+B:
+            assert(p->kids[0]);
+            assert(p->kids[1]);
+            assert(p->kids[1]->kids[0]);
+
+            print(";starting block copy (%s %s %d)\n", p->kids[0]->syms[RX]->x.name, p->kids[1]->kids[0]->syms[RX]->x.name, p->syms[0]->u.c.v.i);
+
+            for ( i = 0; i < p->syms[0]->u.c.v.i; i++ ) {
+                if ( i == 0 )
+                    print("SET [%s], [%s]\n", p->kids[0]->syms[RX]->x.name, p->kids[1]->kids[0]->syms[RX]->x.name);
+                else
+                    print("SET [%d+%s], [%d+%s]\n", i, p->kids[0]->syms[RX]->x.name, i, p->kids[1]->kids[0]->syms[RX]->x.name);
+            }
+
+            break;
 /*
         case INDIR+P:
             if (p->kids[0]) {
@@ -827,27 +880,6 @@ static void emit2(Node p) {
 
             break;
 */
-        case ADDRF+P:
-            if (p->syms[0]->x.offset)
-                print("%d+J", p->syms[0]->x.offset);
-            else
-                print("J");
-            break;
-        case ASGN+B:
-            assert(p->kids[0]);
-            assert(p->kids[1]);
-            assert(p->kids[1]->kids[0]);
-
-            print(";starting block copy (%s %s %d)\n", p->kids[0]->syms[RX]->x.name, p->kids[1]->kids[0]->syms[RX]->x.name, p->syms[0]->u.c.v.i);
-
-            for ( i = 0; i < p->syms[0]->u.c.v.i; i++ ) {
-                if ( i == 0 )
-                    print("SET [%s], [%s]\n", p->kids[0]->syms[RX]->x.name, p->kids[1]->kids[0]->syms[RX]->x.name);
-                else
-                    print("SET [%d+%s], [%d+%s]\n", i, p->kids[0]->syms[RX]->x.name, i, p->kids[1]->kids[0]->syms[RX]->x.name);
-            }
-
-            break;
     }
 }
 

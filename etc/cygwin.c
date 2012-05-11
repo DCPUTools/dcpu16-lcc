@@ -13,7 +13,7 @@ char *include[] = { "-Iinclude/dcpu16", 0 };
 char *com[] = { LCCDIR "rcc", "$1", "$2", "$3", 0 };
 char *as[] = { };
 //char *ld[] = { "/bin/ld", "-o", "$3", "$1", "$2", 0 };
-char *ld[] = { };
+char *ld[] = { LCCDIR "assembler", "$3", "$1" };
 
 extern char *concat(char *, char *);
 

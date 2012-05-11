@@ -18,16 +18,19 @@ B=$(BUILDDIR)/
 T=$(TSTDIR)/
 
 what:
-	-@echo make all rcc lburg cpp lcc bprint liblcc triple clean clobber
+	-@echo make all rcc lburg cpp lcc bprint liblcc triple clean clobber assembler
 
-all::	rcc lburg cpp lcc bprint liblcc
+all:: 	rcc lburg cpp lcc bprint liblcc assembler
 
-rcc:	$Brcc$E
-lburg:	$Blburg$E
-cpp:	$Bcpp$E
-lcc:	$Blcc$E
-bprint:	$Bbprint$E
-liblcc:	$Bliblcc$A
+rcc:	   $Brcc$E
+lburg:	   $Blburg$E
+cpp:	   $Bcpp$E
+lcc:	   $Blcc$E
+bprint:	   $Bbprint$E
+liblcc:	   $Bliblcc$A
+assembler: $Bassembler$E
+
+# RCC
 
 RCCOBJS=$Balloc$O \
 	$Bbind$O \
@@ -121,6 +124,7 @@ $Bx86.c:	$Blburg$E src/x86.md;      $Blburg src/x86.md      $@
 $Bx86linux.c:	$Blburg$E src/x86linux.md; $Blburg src/x86linux.md $@
 $Bdcpu16.c:	$Blburg$E src/dcpu16.md;   $Blburg src/dcpu16.md $@
 
+# Bprint/ops
 
 $Bbprint$E:	$Bbprint$O;		$(LD) $(LDFLAGS) -o $@ $Bbprint$O 
 $Bops$E:	$Bops$O;		$(LD) $(LDFLAGS) -o $@ $Bops$O 
@@ -128,10 +132,14 @@ $Bops$E:	$Bops$O;		$(LD) $(LDFLAGS) -o $@ $Bops$O
 $Bbprint$O:	etc/bprint.c src/profio.c;	$(CC) $(CFLAGS) -c -Isrc -o $@ etc/bprint.c
 $Bops$O:	etc/ops.c src/ops.h;		$(CC) $(CFLAGS) -c -Isrc -o $@ etc/ops.c
 
+# LCC
+
 $Blcc$E:	$Blcc$O $Bhost$O;	$(LD) $(LDFLAGS) -o $@ $Blcc$O $Bhost$O 
 
 $Blcc$O:	etc/lcc.c;		$(CC) $(CFLAGS) -c -o $@ etc/lcc.c
 $Bhost$O:	$(HOSTFILE);	$(CC) $(CFLAGS) -c -o $@ $(HOSTFILE)
+
+# LIBLCC
 
 LIBOBJS=$Bassert$O $Bbbexit$O $Byynull$O
 
@@ -141,12 +149,22 @@ $Bassert$O:	lib/assert.c;	$(CC) $(CFLAGS) -c -o $@ lib/assert.c
 $Byynull$O:	lib/yynull.c;	$(CC) $(CFLAGS) -c -o $@ lib/yynull.c
 $Bbbexit$O:	lib/bbexit.c;	$(CC) $(CFLAGS) -c -o $@ lib/bbexit.c
 
+# lburg
+
 $Blburg$E:	$Blburg$O $Bgram$O;	$(LD) $(LDFLAGS) -o $@ $Blburg$O $Bgram$O 
 
 $Blburg$O $Bgram$O:	lburg/lburg.h
 
 $Blburg$O:	lburg/lburg.c;	$(CC) $(CFLAGS) -c -Ilburg -o $@ lburg/lburg.c
 $Bgram$O:	lburg/gram.c;	$(CC) $(CFLAGS) -c -Ilburg -o $@ lburg/gram.c
+
+# assembler
+
+$Bassembler$E: $Bassembler$O; $(LD) $(LDFLAGS) -o $@ $Bassembler$O
+
+$Bassembler$O: assembler/assembler.c; $(CC) $(CFLAGS) -c -o $@ assembler/assembler.c
+
+# CPP
 
 CPPOBJS=$Bcpp$O $Blexer$O $Bnlist$O $Btokens$O $Bmacro$O $Beval$O \
 	$Binclude$O $Bhideset$O $Bgetopt$O $Bunix$O
@@ -232,7 +250,7 @@ clean::		testclean
 		$(RM) $B*.ilk
 
 clobber::	clean
-		$(RM) $Brcc$E $Blburg$E $Bcpp$E $Blcc$E $Bcp$E $Bbprint$E $B*$A
+		$(RM) $Brcc$E $Blburg$E $Bcpp$E $Blcc$E $Bcp$E $Bbprint$E $Bassembler$E $B*$A
 		$(RM) $B*.pdb $B*.pch
 
 RCCSRCS=src/alloc.c \

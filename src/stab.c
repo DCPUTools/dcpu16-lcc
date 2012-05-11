@@ -33,6 +33,7 @@ static void asgncode(Type ty, int lev) {
 	ty->x.marked = 1;
 	switch (ty->op) {
 	case VOLATILE: case CONST: case VOLATILE+CONST:
+	    printf("Pwet");
 		asgncode(ty->type, lev);
 		ty->x.typeno = ty->type->x.typeno;
 		break;

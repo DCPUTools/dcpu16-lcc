@@ -87,7 +87,6 @@ SET PC, __printf_putc
 :__printf_putc2
 ADD Y, 2
 SET A, [Z]
-;BOR A, 0xF000
 BOR A, [__dispcolor]
 ADD Z, 1
 JSR _global_putchar
