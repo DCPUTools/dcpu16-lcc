@@ -470,26 +470,26 @@ stmt:   ASGNI2(addr,MODI1(bval,mem))    "SET I, %2\nSET [%0], %1\nMOD [%0], I\n"
 stmt:   ASGNU1(addr,MODU1(bval,mem))    "SET I, %2\nSET [%0], %1\nMOD [%0], I\n" 5
 stmt:   ASGNU2(addr,MODU1(bval,mem))    "SET I, %2\nSET [%0], %1\nMOD [%0], I\n" 5
 
-reg:    MULF1(reg,cm)                   "?SET %c, %0\nMUL %c, %1\nSET I, O\nSHR %c, 8\nSHL I, 8\nADD %c, X\n" 12
+reg:    MULF1(reg,cm)                   "?SET %c, %0\nMUL %c, %1\nSET I, EX\nSHR %c, 8\nSHL I, 8\nADD %c, X\n" 12
 reg:    MULI1(reg,cm)                   "?SET %c, %0\nMUL %c, %1\n" 3
 reg:    MULU1(reg,cm)                   "?SET %c, %0\nMUL %c, %1\n" 3
-reg:    MULF1(reg,reg)                  "?SET %c, %0\nMUL %c, %1\nSET I, O\nSHR %c, 8\nSHL I, 8\nADD %c, X\n" ncregop(a, 12)
+reg:    MULF1(reg,reg)                  "?SET %c, %0\nMUL %c, %1\nSET I, EX\nSHR %c, 8\nSHL I, 8\nADD %c, X\n" ncregop(a, 12)
 reg:    MULI1(reg,reg)                  "?SET %c, %0\nMUL %c, %1\n" ncregop(a, 3)
 reg:    MULU1(reg,reg)                  "?SET %c, %0\nMUL %c, %1\n" ncregop(a, 3)
-reg:    MULF1(bval,reg)                 "SET [_scratch0], %1\nSET %c, %0\nMUL %c, [_scratch0]\nSET I, O\nSHR %c, 8\nSHL I, 8\nADD %c, I\n" 13
+reg:    MULF1(bval,reg)                 "SET [_scratch0], %1\nSET %c, %0\nMUL %c, [_scratch0]\nSET I, EX\nSHR %c, 8\nSHL I, 8\nADD %c, I\n" 13
 reg:    MULI1(bval,reg)                 "SET I, %1\nSET %c, %0\nMUL %c, I\n" 4
 reg:    MULU1(bval,reg)                 "SET I, %1\nSET %c, %0\nMUL %c, I\n" 4
-stmt:   ASGNF1(addr,MULF1(bval,bval))   "MUL [%0], %2\nSET I, O\nSHR [%0], 8\nSHL I, 8\nADD [%0], I\n" memop(a, 11)
+stmt:   ASGNF1(addr,MULF1(bval,bval))   "MUL [%0], %2\nSET I, EX\nSHR [%0], 8\nSHL I, 8\nADD [%0], I\n" memop(a, 11)
 stmt:   ASGNI1(addr,MULI1(bval,bval))   "MUL [%0], %2\n" memop(a, 2)
 stmt:   ASGNI2(addr,MULI1(bval,bval))   "MUL [%0], %2\n" memop(a, 2)
 stmt:   ASGNU1(addr,MULU1(bval,bval))   "MUL [%0], %2\n" memop(a, 2)
 stmt:   ASGNU2(addr,MULU1(bval,bval))   "MUL [%0], %2\n" memop(a, 2)
-stmt:   ASGNF1(addr,MULF1(bval,bval))   "SET [%0], %1\nMUL [%0], %2\nSET I, O\nSHR [%0], 8\nSHL I, 8\nADD [%0], I\n" ncmemop(a, 12)
+stmt:   ASGNF1(addr,MULF1(bval,bval))   "SET [%0], %1\nMUL [%0], %2\nSET I, EX\nSHR [%0], 8\nSHL I, 8\nADD [%0], I\n" ncmemop(a, 12)
 stmt:   ASGNI1(addr,MULI1(bval,bval))   "SET [%0], %1\nMUL [%0], %2\n" ncmemop(a, 3)
 stmt:   ASGNI2(addr,MULI1(bval,bval))   "SET [%0], %1\nMUL [%0], %2\n" ncmemop(a, 3)
 stmt:   ASGNU1(addr,MULU1(bval,bval))   "SET [%0], %1\nMUL [%0], %2\n" ncmemop(a, 3)
 stmt:   ASGNU2(addr,MULU1(bval,bval))   "SET [%0], %1\nMUL [%0], %2\n" ncmemop(a, 3)
-stmt:   ASGNF1(addr,MULF1(bval,mem))    "SET [_scratch0], %2\nSET [%0], %1\nMUL [%0], [_scratch0]\nSET I, O\nSHR [%0], 8\nSHL I, 8\nADD [%0], I\n" 13
+stmt:   ASGNF1(addr,MULF1(bval,mem))    "SET [_scratch0], %2\nSET [%0], %1\nMUL [%0], [_scratch0]\nSET I, EX\nSHR [%0], 8\nSHL I, 8\nADD [%0], I\n" 13
 stmt:   ASGNI1(addr,MULI1(bval,mem))    "SET I, %2\nSET [%0], %1\nMUL [%0], I\n" 4
 stmt:   ASGNI2(addr,MULI1(bval,mem))    "SET I, %2\nSET [%0], %1\nMUL [%0], I\n" 4
 stmt:   ASGNU1(addr,MULU1(bval,mem))    "SET I, %2\nSET [%0], %1\nMUL [%0], I\n" 4
@@ -805,27 +805,7 @@ static void emit2(Node p) {
             assert(p->kids[1]);
             if(opsz == 2)
             {
-                if(p->kids[1]->syms[0]->scope == CONSTANTS)
-                {
-                    print(";name %s; offset %d\n", p->kids[0]->syms[0]->x.name, p->kids[0]->syms[0]->x.offset);
                 
-                    /*i = p->kids[1]->syms[0]->u.c.v.i;
-                    j = (i & 0xffff0000) >> 16;
-                    k = p->kids[0]->syms[0]->x.offset;
-                    
-                    if(k)
-                    {
-                        print("SET [%d+J], ", k);
-                    }
-                    else
-                    {
-                        print("SET [J], ", k);
-                    }
-                    emithex(j);
-                    print("\nSET [%d+J], ", k + 1);
-                    emithex(i & 0xffff);
-                    print("\n");*/
-                }
             }
             break;
         case ASGN+B:

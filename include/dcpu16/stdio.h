@@ -4,6 +4,11 @@
 // Types
 typedef void (*interruptlistener)(int);
 
+#ifndef __BOOLEAN
+#define __BOOLEAN
+typedef unsigned bool;
+#endif
+
 // Methods
 extern int printf( const char*, ... );
 extern char* itoa( int, char*, int );
@@ -21,5 +26,8 @@ extern unsigned* setdispcur(unsigned*); //Set display cursor
 extern void setinterruptlistener(interruptlistener pointer);
 extern void* getinterruptlistener();
 extern void triggerinterrupt(int code);
+
+extern char getchar();
+extern bool keystate(int);
 
 #endif

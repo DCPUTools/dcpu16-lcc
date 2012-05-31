@@ -1,160 +1,13 @@
-:__mem_start
-DAT 0x6000
-:__mem_end
-DAT 0x7fff
-:__alloc_initialized
-DAT 0
-:__alloc_init
-SET [__alloc_initialized], 1
-SET A, [__mem_start]
-SET B, [__mem_end]
-JSR __set_initial_blocks
-SET PC, POP
-:__set_initial_blocks
-SET PUSH, B
-SET [A], 0xffff
-ADD A, 1
-SUB B, A
-SET [A], B
-SET B, POP
-SUB A, 1
-SET [B], A
-
-SET PC, POP
-
 ;
 ; extern void* malloc(int owner, int words)
 ;
 :_global_malloc
-
-IFE [__alloc_initialized], 0
-    JSR __alloc_init
-SET PUSH, I
-SET I, [__mem_start]
-
-:__malloc_loop
-IFE [I], 0xFFFF
-    SET PC, __malloc_found_free
-ADD I, 1
-ADD I, [I]
-ADD I, 2
-SET PC, __malloc_loop
-
-:__malloc_found_free
-IFE I, [__mem_start]
-    SET PC, __malloc_allocate
-ADD I, 1
-IFE [I], A
-    SET PC, __malloc_prepare
-IFG [I], A
-    SET PC, __malloc_check_overhead
-ADD I, 1
-ADD I, [I]
-SET PC, __malloc_loop
-
-:__malloc_check_overhead
-SET PUSH, B
-SET B, [I]
-SUB B, A
-IFG B, 3
-    SET PC, __malloc_check_end
-SUB I, 1
-SET B, POP
-SET [I], B
-SET PUSH, I
-SET PC, __malloc_end
-
-:__malloc_check_end
-SET B, POP
-SET PC, __malloc_prepare
-
-:__malloc_prepare
-SUB I, 1
-SET PC, __malloc_allocate
-
-:__malloc_allocate
-SET PUSH, I
-SET PUSH, I
-SET [I], B
-ADD I, 1
-SET [I], A
-ADD I, 1
-ADD I, A
-SET B, POP
-SET [I], B
-ADD I, 1
-SET A, I
-SET B, [__mem_end]
-JSR __set_initial_blocks
-SET PC, __malloc_end
-
-:__malloc_end
-SET A, POP
-ADD A, 2
-SET I, POP
 
 SET PC, POP
 ;
 ; extern void free(void*)
 ;
 :_global_free
-
-IFE [__alloc_initialized], 0
-    JSR __alloc_init
-SUB A, 2
-SET [A], 0xffff
-SET PUSH, A
-
-:__free_check_forward
-ADD A, 1
-SET B, [A]
-ADD A, B
-ADD A, 2
-IFE [A], 0xffff
-    SET PC, __free_merge_forward
-
-:__free_check_backwards
-SET A, PEEK
-SUB A, 1
-IFG A, [__mem_start]
-    SET PC, __free_check_backwards_continue
-SET PC, __free_end
-
-:__free_check_backwards_continue
-IFE [A], 0
-    SET PC, __free_end
-SET B, [A]
-SET A, B
-IFN [A], 0xffff
-    SET PC, __free_end
-SET PEEK, A
-ADD A, 1
-SET B, [A]
-ADD A, B
-ADD A, 2
-SET PC, __free_merge_forward
-
-:__free_merge_forward
-SET [A], 0
-ADD A, 1
-SET B, [A]
-SET C, B
-SET [A], 0
-ADD A, B
-IFN A, [__mem_end]
-    ADD A, 1
-SET B, [SP]
-SET [A], B
-SET A, B
-ADD A, 1
-SET B, [A]
-ADD B, C
-ADD B, 3
-SET [A], B
-SET PC, __free_end
-
-:__free_end
-SET A, POP
 
 SET PC, POP
 ;
@@ -198,6 +51,12 @@ SET PC, POP
 :_global_putmem
 
 SET [A], B
+SET PC, POP
+;
+; extern void* getpointer(unsigned index);
+;
+:_global_getpointer
+
 SET PC, POP
 ;
 ; extern void jump(void* pointer)

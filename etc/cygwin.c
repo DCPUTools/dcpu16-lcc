@@ -11,9 +11,9 @@ char inputs[256] = "";
 char *cpp[] = { LCCDIR "cpp", "-Ddcpu16", "$1", "$2", "$3", 0 };
 char *include[] = { "-Iinclude/dcpu16", 0 };
 char *com[] = { LCCDIR "rcc", "$1", "$2", "$3", 0 };
-char *as[] = { };
+char *as[] = { LCCDIR "assembler", "$3", "$1" };
 //char *ld[] = { "/bin/ld", "-o", "$3", "$1", "$2", 0 };
-char *ld[] = { LCCDIR "assembler", "$3", "$1" };
+char *ld[] = {  };
 
 extern char *concat(char *, char *);
 
