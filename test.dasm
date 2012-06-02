@@ -8,6 +8,7 @@ SET PC, _crash
 SET I, J
 SET J, SP    ;set new frame pointer
 SET PUSH, I  ;save previous frame pointer
+SET I, J
 SET A, 0
 :_L3
 SET J, POP   ;restore previous frame pointer

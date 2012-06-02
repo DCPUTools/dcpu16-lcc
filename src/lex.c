@@ -382,6 +382,12 @@ int gettok(void) {
 				cp = rcp + 3;
 				return AUTO;
 			}
+			if (rcp[0] == 's'
+			&&  rcp[1] == 'm'
+			&&  !(map[rcp[2]]&(DIGIT|LETTER))) {
+			    cp = rcp + 2;
+			    return ASM;
+			}
 			goto id;
 		case 'b':
 			if (rcp[0] == 'r'
@@ -683,6 +689,20 @@ int gettok(void) {
 			&& !(map[rcp[9]]&(DIGIT|LETTER))) {
 				cp = rcp + 9;
 				return FIRSTARG;
+			}
+			if(rcp[0] == '_'
+		    && rcp[1] == 'a'
+		    && rcp[2] == 's'
+		    && rcp[3] == 'm') {
+			    if(rcp[4] == '_'
+			    && rcp[5] == '_'
+			    && !(map[rcp[6]]&(DIGIT|LETTER))) {
+			        cp = rcp + 6;
+                    return ASM;
+			    } else if(!(map[rcp[4]]&(DIGIT|LETTER))) {
+			        cp = rcp + 4;
+			        return ASM;
+			    }
 			}
 			goto id;
 		default:

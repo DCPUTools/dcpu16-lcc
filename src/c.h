@@ -209,7 +209,8 @@ struct list {
 
 struct code {
 	enum { Blockbeg, Blockend, Local, Address, Defpoint,
-	       Label,    Start,    Gen,   Jump,    Switch
+	       Label,    Start,    Gen,   Jump,    Switch,
+	       Direct
 	} kind;
 	Code prev, next;
 	union {
@@ -232,6 +233,7 @@ struct code {
 			int point;
 		} point; 
 		Node forest;
+		char* str;
 		struct {
 			Symbol sym;
 			Symbol table;
@@ -476,6 +478,7 @@ extern Tree incr(int, Tree, Tree);
 extern Tree lvalue(Tree);
 extern Tree nullcall(Type, Symbol, Tree, Tree);
 extern Tree pointer(Tree);
+extern Tree primary(void);
 extern Tree rvalue(Tree);
 extern Tree value(Tree);
 
@@ -550,6 +553,7 @@ extern Symbol findtype(Type);
 extern void foreach(Table, int, void (*)(Symbol, void *), void *);
 extern Symbol genident(int, Type, int);
 extern int genlabel(int);
+extern Symbol direct(char *, int);
 extern Symbol install(const char *, Table *, int, int);
 extern Symbol intconst(int);
 extern Symbol lookup(const char *, Table);

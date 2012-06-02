@@ -18,7 +18,6 @@ static Tree expr3(int);
 static Tree nullcheck(Tree);
 static Tree postfix(Tree);
 static Tree unary(void);
-static Tree primary(void);
 static Type super(Type ty);
 
 static Type super(Type ty) {
@@ -336,7 +335,7 @@ static Tree postfix(Tree p) {
 			return p;
 		}
 }
-static Tree primary(void) {
+Tree primary(void) {
 	Tree p;
 
 	assert(t != '(');
@@ -353,7 +352,8 @@ static Tree primary(void) {
 		   tsym = constant(tsym->type, tsym->u.c.v); 
 		   if (tsym->u.c.loc == NULL)
 		   	tsym->u.c.loc = genident(STATIC, tsym->type, GLOBAL);
-		   p = idtree(tsym->u.c.loc); break;
+		   p = idtree(tsym->u.c.loc);
+		   break;
 	case ID:   if (tsym == NULL)
 		   	{
 				Symbol p = install(token, &identifiers, level, PERM);

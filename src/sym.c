@@ -228,6 +228,16 @@ Symbol genident(int scls, Type ty, int lev) {
 		(*IR->defsymbol)(p);
 	return p;
 }
+Symbol direct(char *str, int lev)
+{
+    Symbol p;
+
+    NEW0(p, lev >= LOCAL ? FUNC : PERM);
+    p->u.c.v.p = string(str);
+    p->generated = 1;
+
+    return p;
+}
 
 Symbol temporary(int scls, Type ty) {
 	Symbol p;

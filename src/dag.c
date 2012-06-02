@@ -473,6 +473,7 @@ void gencode(Symbol caller[], Symbol callee[]) {
 			       cp->u.forest = (*IR->gen)(cp->u.forest); break;
 		case Local:    (*IR->local)(cp->u.var); break;
 		case Switch:   break;
+        case Direct:   break;
 		default: assert(0);
 		}
 	src = save;
@@ -541,6 +542,9 @@ void emitcode(void) {
 			       	}
 			       	swtoseg(CODE);
 			       } break;
+		case Direct:
+		    printf("%s", cp->u.forest->syms[0]->u.c.v.p);
+		    break;
 		default: assert(0);
 		}
 	src = save;
