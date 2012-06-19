@@ -93,6 +93,7 @@ enum { VREG=(44<<4) };
 extern void             blockbeg(Env *);
 extern void             blockend(Env *);
 extern void             emit(Node);
+extern void             direct(Node);
 extern Node             gen(Node);
 
 extern unsigned         emitbin(Node, int);

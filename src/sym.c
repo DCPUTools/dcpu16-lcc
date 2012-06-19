@@ -228,7 +228,7 @@ Symbol genident(int scls, Type ty, int lev) {
 		(*IR->defsymbol)(p);
 	return p;
 }
-Symbol direct(char *str, int lev)
+Symbol gendirect(char *str, int lev)
 {
     Symbol p;
 

@@ -9,7 +9,7 @@ static char rcsid[] = "$Id$";
 enum { BLANK=01,  NEWLINE=02, LETTER=04,
        DIGIT=010, HEX=020,    OTHER=040 };
 
-static unsigned char map[256] = { /* 000 nul */	0,
+unsigned char map[256] = { /* 000 nul */	0,
 				   /* 001 soh */	0,
 				   /* 002 stx */	0,
 				   /* 003 etx */	0,

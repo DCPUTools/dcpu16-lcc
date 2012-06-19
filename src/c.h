@@ -214,6 +214,10 @@ struct code {
 	} kind;
 	Code prev, next;
 	union {
+	    struct {
+	           char *code;
+	           Symbol *argv;
+	    } acode;
 		struct {
 			int level;
 			Symbol *locals;
@@ -379,6 +383,7 @@ extern Symbol YYnull;
 extern Symbol YYcheck;
 extern int glevel;
 extern int xref;
+extern unsigned char map[256];
 
 extern int ncalled;
 extern int npoints;
@@ -451,6 +456,7 @@ extern Tree eqtree(int, Tree, Tree);
 extern int iscallb(Tree);
 extern Tree shtree(int, Tree, Tree);
 extern void typeerror(int, Tree, Tree);
+extern void asmcode(char *, Symbol []);
 
 extern void test(int tok, char set[]);
 extern void expect(int tok);
@@ -471,6 +477,7 @@ extern Tree cond(Tree);
 extern Tree expr0(int);
 extern Tree expr(int);
 extern Tree expr1(int);
+extern Tree unary(void);
 extern Tree field(Tree, const char *);
 extern char *funcname(Tree);
 extern Tree idtree(Symbol);
@@ -553,7 +560,7 @@ extern Symbol findtype(Type);
 extern void foreach(Table, int, void (*)(Symbol, void *), void *);
 extern Symbol genident(int, Type, int);
 extern int genlabel(int);
-extern Symbol direct(char *, int);
+Symbol gendirect(char *, int);
 extern Symbol install(const char *, Table *, int, int);
 extern Symbol intconst(int);
 extern Symbol lookup(const char *, Table);

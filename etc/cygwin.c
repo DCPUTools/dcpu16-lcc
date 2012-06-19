@@ -3,7 +3,7 @@
 static char rcsid[] = "$Id$";
 
 #ifndef LCCDIR
-#define LCCDIR "target/"
+#define LCCDIR "bin/"
 #endif
 
 char *suffixes[] = { ".c", ".i", ".dasm", ".o", ".out", 0 };

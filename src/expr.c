@@ -17,7 +17,6 @@ static Tree expr2(void);
 static Tree expr3(int);
 static Tree nullcheck(Tree);
 static Tree postfix(Tree);
-static Tree unary(void);
 static Type super(Type ty);
 
 static Type super(Type ty) {
@@ -132,7 +131,7 @@ static Tree expr3(int k) {
 		}
 	return p;
 }
-static Tree unary(void) {
+Tree unary(void) {
 	Tree p;
 
 	switch (t) {

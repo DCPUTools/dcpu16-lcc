@@ -6,6 +6,9 @@ static char rcsid[] = "$Id$";
 
 #define den(i,j) ((j-buckets[i]+1.0)/(v[j]-v[buckets[i]]+1))
 
+enum { BLANK=01,  NEWLINE=02, LETTER=04,
+       DIGIT=010, HEX=020,    OTHER=040 };
+
 struct code codehead = { Start };
 Code codelist = &codehead;
 float density = 0.5;
@@ -108,7 +111,7 @@ void statement(int loop, Swtch swp, int lev)
             forstmt(genlabel(4), swp, lev + 1);
             break;
         case ASM:
-            asmstmt(genlabel(3), swp, lev + 1);
+            asmstmt(genlabel(1), swp, lev + 1);
             break;
         case BREAK:
             walk(NULL, 0, 0);
@@ -327,24 +330,79 @@ static void stmtlabel(void)
     t = gettok();
     expect(':');
 }
+static char *asmargs(Symbol p, Symbol argv[], int size)
+{
+    int n = 0;
+    char *s1, *s2, str[MAXLINE];
+    Symbol s;
+
+    if(p->type->size >= MAXLINE)
+    {
+        error("asm string too long\n");
+        return "";
+    }
+    for (s2 = str, s1 = p->u.c.v.p; *s1;)
+        if ((*s2++ = *s1++) == '%' && *s1 && map[*s1] & LETTER)
+        {
+            char *t = s1;
+            while (*t && map[*t] & (LETTER | DIGIT))
+            {
+                t++;
+            }
+
+            s = lookup(stringn(s1, t - s1), identifiers);
+            if(s && s->sclass != TYPEDEF && s->sclass != ENUM)
+            {
+                s->ref += refinc;
+                if(s->sclass != STATIC)
+                {
+                    s->defined = 1;
+                }
+
+                argv[n] = s;
+
+                if (++n == size)
+                {
+                    error("too many variable references in asm string\n");
+                    n = size - 1;
+                }
+                else
+                {
+                    *s2++ = n - 1;
+                    s1 = t;
+                }
+            }
+        }
+    *s2 = 0;
+    argv[n] = 0;
+    return stringn(str, s2 - str);
+}
 static void asmstmt(int lab, Swtch swp, int lev)
 {
-    char *buf = "";
+    char *s;
+    Symbol *argv;
 
     t = gettok();
-
     expect('(');
-
-    while(t == SCON)
+    if(t == SCON)
     {
-        strcat(buf, tsym->u.c.v.p);
-        code(Direct)->u.forest = newnode(DIRECT, NULL, NULL, direct(tsym->u.c.v.p, lev));
+        argv = (Symbol *) allocate(11 * sizeof(Symbol *), FUNC);
+        s = asmargs(tsym, argv, 11);
+
+        if(cfunc)
+        {
+            walk(0, 0, 0);
+            //code(Start);
+            code(Direct);
+            codelist->u.acode.code = s;
+            codelist->u.acode.argv = argv;
+        }
+        else
+        {
+            asmcode(s, argv);
+        }
 
         t = gettok();
-        if(t == ',')
-        {
-            t = gettok();
-        }
     }
 
     expect(')');

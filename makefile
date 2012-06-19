@@ -1,9 +1,10 @@
 # $Id$
 BUILDDIR=target
+BINDIR=bin
 A=.a
 O=.o
 E=
-CC=cc
+CC=gcc
 CFLAGS=-g
 LDFLAGS=-g
 LD=$(CC)
@@ -16,19 +17,21 @@ CUSTOM=custom.mk
 include $(CUSTOM)
 B=$(BUILDDIR)/
 T=$(TSTDIR)/
+D=$(BINDIR)/
 
 what:
 	-@echo make all rcc lburg cpp lcc bprint liblcc triple clean clobber assembler
 
-all:: 	rcc lburg cpp lcc bprint liblcc assembler
+all:: 	rcc lburg cpp lcc bprint liblcc
 
-rcc:	   $Brcc$E
-lburg:	   $Blburg$E
-cpp:	   $Bcpp$E
-lcc:	   $Blcc$E
-bprint:	   $Bbprint$E
+rcc:	   $Drcc$E
+lburg:	   $Dlburg$E
+cpp:	   $Dcpp$E
+lcc:	   $Dlcc$E
+bprint:	   $Dbprint$E
 liblcc:	   $Bliblcc$A
-assembler: $Bassembler$E
+ctest:
+	$Dlcc$E -S -Wf-emain -Wf-header -target=dcpu16 -o test.dasm test.c
 
 # RCC
 
@@ -67,10 +70,10 @@ RCCOBJS=$Balloc$O \
 	$Bstab$O \
 	$Bx86$O \
 	$Bx86linux$O \
-	$Bdcpu16$O
+	$Bdcpu16$O \
 
 
-$Brcc$E::	$Bmain$O $Blibrcc$A $(EXTRAOBJS)
+$Drcc$E::	$Bmain$O $Blibrcc$A $(EXTRAOBJS)
 		$(LD) $(LDFLAGS) -o $@ $Bmain$O $(EXTRAOBJS) $Blibrcc$A $(EXTRALIBS)
 
 $Blibrcc$A:	$(RCCOBJS)
@@ -116,17 +119,17 @@ $Bx86$O:	$Bx86.c;	$(CC) $(CFLAGS) -c -Isrc -o $@ $Bx86.c
 $Bx86linux$O:	$Bx86linux.c;	$(CC) $(CFLAGS) -c -Isrc -o $@ $Bx86linux.c
 $Bdcpu16$O:	$Bdcpu16.c;	$(CC) $(CFLAGS) -c -Isrc -o $@ $Bdcpu16.c
 
-$Bdagcheck.c:	$Blburg$E src/dagcheck.md; $Blburg src/dagcheck.md $@
-$Balpha.c:	$Blburg$E src/alpha.md;    $Blburg src/alpha.md    $@
-$Bmips.c:	$Blburg$E src/mips.md;     $Blburg src/mips.md     $@
-$Bsparc.c:	$Blburg$E src/sparc.md;    $Blburg src/sparc.md    $@
-$Bx86.c:	$Blburg$E src/x86.md;      $Blburg src/x86.md      $@
-$Bx86linux.c:	$Blburg$E src/x86linux.md; $Blburg src/x86linux.md $@
-$Bdcpu16.c:	$Blburg$E src/dcpu16.md;   $Blburg src/dcpu16.md $@
+$Bdagcheck.c:	$Dlburg$E src/dagcheck.md; $Dlburg src/dagcheck.md $@
+$Balpha.c:	$Dlburg$E src/alpha.md;    $Dlburg src/alpha.md    $@
+$Bmips.c:	$Dlburg$E src/mips.md;     $Dlburg src/mips.md     $@
+$Bsparc.c:	$Dlburg$E src/sparc.md;    $Dlburg src/sparc.md    $@
+$Bx86.c:	$Dlburg$E src/x86.md;      $Dlburg src/x86.md      $@
+$Bx86linux.c:	$Dlburg$E src/x86linux.md; $Dlburg src/x86linux.md $@
+$Bdcpu16.c:	$Dlburg$E src/dcpu16.md;   $Dlburg src/dcpu16.md $@
 
 # Bprint/ops
 
-$Bbprint$E:	$Bbprint$O;		$(LD) $(LDFLAGS) -o $@ $Bbprint$O 
+$Dbprint$E:	$Bbprint$O;		$(LD) $(LDFLAGS) -o $@ $Bbprint$O 
 $Bops$E:	$Bops$O;		$(LD) $(LDFLAGS) -o $@ $Bops$O 
 
 $Bbprint$O:	etc/bprint.c src/profio.c;	$(CC) $(CFLAGS) -c -Isrc -o $@ etc/bprint.c
@@ -134,7 +137,7 @@ $Bops$O:	etc/ops.c src/ops.h;		$(CC) $(CFLAGS) -c -Isrc -o $@ etc/ops.c
 
 # LCC
 
-$Blcc$E:	$Blcc$O $Bhost$O;	$(LD) $(LDFLAGS) -o $@ $Blcc$O $Bhost$O 
+$Dlcc$E:	$Blcc$O $Bhost$O;	$(LD) $(LDFLAGS) -o $@ $Blcc$O $Bhost$O 
 
 $Blcc$O:	etc/lcc.c;		$(CC) $(CFLAGS) -c -o $@ etc/lcc.c
 $Bhost$O:	$(HOSTFILE);	$(CC) $(CFLAGS) -c -o $@ $(HOSTFILE)
@@ -151,25 +154,19 @@ $Bbbexit$O:	lib/bbexit.c;	$(CC) $(CFLAGS) -c -o $@ lib/bbexit.c
 
 # lburg
 
-$Blburg$E:	$Blburg$O $Bgram$O;	$(LD) $(LDFLAGS) -o $@ $Blburg$O $Bgram$O 
+$Dlburg$E:	$Blburg$O $Bgram$O;	$(LD) $(LDFLAGS) -o $@ $Blburg$O $Bgram$O 
 
 $Blburg$O $Bgram$O:	lburg/lburg.h
 
 $Blburg$O:	lburg/lburg.c;	$(CC) $(CFLAGS) -c -Ilburg -o $@ lburg/lburg.c
 $Bgram$O:	lburg/gram.c;	$(CC) $(CFLAGS) -c -Ilburg -o $@ lburg/gram.c
 
-# assembler
-
-$Bassembler$E: $Bassembler$O; $(LD) $(LDFLAGS) -o $@ $Bassembler$O
-
-$Bassembler$O: assembler/assembler.c; $(CC) $(CFLAGS) -c -o $@ assembler/assembler.c
-
 # CPP
 
 CPPOBJS=$Bcpp$O $Blexer$O $Bnlist$O $Btokens$O $Bmacro$O $Beval$O \
 	$Binclude$O $Bhideset$O $Bgetopt$O $Bunix$O
 
-$Bcpp$E:	$(CPPOBJS)
+$Dcpp$E:	$(CPPOBJS)
 		$(LD) $(LDFLAGS) -o $@ $(CPPOBJS) 
 
 $(CPPOBJS):	cpp/cpp.h
@@ -250,7 +247,7 @@ clean::		testclean
 		$(RM) $B*.ilk
 
 clobber::	clean
-		$(RM) $Brcc$E $Blburg$E $Bcpp$E $Blcc$E $Bcp$E $Bbprint$E $Bassembler$E $B*$A
+		$(RM) $Drcc$E $Dlburg$E $Dcpp$E $Dlcc$E $Bcp$E $Dbprint$E $Bassembler$E $B*$A
 		$(RM) $B*.pdb $B*.pch
 
 RCCSRCS=src/alloc.c \
@@ -296,10 +293,10 @@ triple:	$B2rcc$E
 	dd if=$B1rcc$E of=$Brcc1$E bs=512 skip=1
 	dd if=$B2rcc$E of=$Brcc2$E bs=512 skip=1
 	if cmp $Brcc1$E $Brcc2$E; then \
-		mv $B2rcc$E $Brcc$E; \
+		mv $B2rcc$E $Drcc$E; \
 		$(RM) $B1rcc$E $Brcc[12]$E; fi
 
-$B1rcc$E:	$Brcc$E $Blcc$E $Bcpp$E
+$B1rcc$E:	$Drcc$E $Dlcc$E $Dcpp$E
 		$C -o $@ -B$B $(RCCSRCS)
 $B2rcc$E:	$B1rcc$E
 		$C -o $@ -B$B1 $(RCCSRCS)

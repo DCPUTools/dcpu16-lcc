@@ -7,9 +7,7 @@
 #include <time.h>
 #include "test.h"
 
-int main()
+void main()
 {
-    asm ("SET I, J\n");
 
-    return EXIT_SUCCESS;
 }

@@ -473,7 +473,7 @@ void gencode(Symbol caller[], Symbol callee[]) {
 			       cp->u.forest = (*IR->gen)(cp->u.forest); break;
 		case Local:    (*IR->local)(cp->u.var); break;
 		case Switch:   break;
-        case Direct:   break;
+		case Direct:   break;
 		default: assert(0);
 		}
 	src = save;
@@ -542,14 +542,34 @@ void emitcode(void) {
 			       	}
 			       	swtoseg(CODE);
 			       } break;
-		case Direct:
-		    printf("%s", cp->u.forest->syms[0]->u.c.v.p);
-		    break;
+        case Direct:   asmcode(cp->u.acode.code, cp->u.acode.argv);
+            break;
 		default: assert(0);
 		}
 	src = save;
 }
+void asmcode(char *str, Symbol argv[])
+{
+    Symbol p;
+    int n;
 
+    for( ; *str; str++)
+    {
+        if((*str == '%') && (str[1] >= 0) && (str[1] <= 9))
+        {
+            n = *++str;
+            p = argv[n];
+
+            print("%s", p->x.name);
+        }
+        else
+        {
+            print("%c", *str);
+        }
+    }
+
+    print("\n");
+}
 static Node undag(Node forest) {
 	Node p;
 
