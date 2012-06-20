@@ -7,7 +7,15 @@
 #include <time.h>
 #include "test.h"
 
+static unsigned a = 0;
+unsigned b = 0;
+
 void main()
 {
+    unsigned c, x;
 
+    asm("SET A, [%a]");
+    asm("SET B, [%b]");
+    asm("SET C, [%c]");
+    asm("SET X, [%x]");
 }

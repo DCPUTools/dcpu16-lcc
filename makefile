@@ -125,7 +125,7 @@ $Bmips.c:	$Dlburg$E src/mips.md;     $Dlburg src/mips.md     $@
 $Bsparc.c:	$Dlburg$E src/sparc.md;    $Dlburg src/sparc.md    $@
 $Bx86.c:	$Dlburg$E src/x86.md;      $Dlburg src/x86.md      $@
 $Bx86linux.c:	$Dlburg$E src/x86linux.md; $Dlburg src/x86linux.md $@
-$Bdcpu16.c:	$Dlburg$E src/dcpu16.md;   $Dlburg src/dcpu16.md $@
+$Bdcpu16.c:	src/dcpu16.md src/dcpu16.i.c src/dcpu16.i.h;   $Dlburg src/dcpu16.md $@
 
 # Bprint/ops
 
