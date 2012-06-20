@@ -551,7 +551,7 @@ void emitcode(void) {
 void asmcode(char *str, Symbol argv[])
 {
     Symbol p;
-    int n, localoffset;
+    int n, localoffset, op;
 
     for( ; *str; str++)
     {
@@ -561,21 +561,38 @@ void asmcode(char *str, Symbol argv[])
             p = argv[n];
 
             localoffset = p->x.offset + maxoffset;
+            op = specific(p->type->op);
 
-            if(p->x.offset)
+            switch (op)
             {
-                if(localoffset)
-                {
-                    print("%d+J", localoffset);
-                }
-                else
-                {
-                    print("J");
-                }
-            }
-            else
-            {
-                print("%s", p->x.name);
+                case 6:
+                    if (p->x.offset)
+                    {
+                        if (localoffset)
+                        {
+                            print("%d+J", localoffset);
+                        }
+                        else
+                        {
+                            print("J");
+                        }
+                    }
+                    else
+                    {
+                        print("%s", p->x.name);
+                    }
+                    break;
+                case 5:
+
+                    if (p->x.offset)
+                    {
+                        print("%d+J", p->x.offset);
+                    }
+                    else
+                    {
+                        print("%s", p->x.name);
+                    }
+                    break;
             }
         }
         else

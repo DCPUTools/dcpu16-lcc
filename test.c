@@ -10,7 +10,7 @@
 static unsigned a = 0;
 unsigned b = 0;
 
-void main()
+void test(int y, int z, int i, int j)
 {
     unsigned c, x;
 
@@ -18,4 +18,13 @@ void main()
     asm("SET B, [%b]");
     asm("SET C, [%c]");
     asm("SET X, [%x]");
+    asm("SET Y, [%y]");
+    asm("SET Z, [%z]");
+    asm("SET I, [%i]");
+    asm("SET J, [%j]");
+}
+
+void main()
+{
+    test(1,2,3,4);
 }

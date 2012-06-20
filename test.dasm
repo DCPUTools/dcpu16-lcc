@@ -6,12 +6,31 @@ JSR _global_main
 DAT 0
 :_global_b
 DAT 0
-:_global_main
+:_global_test
 SUB SP, 2    ;making room on stack for locals
+SET I, J
 SET J, SP    ;set new frame pointer
+SET PUSH, I  ;save previous frame pointer
 SET A, [_global_a]
 SET B, [_global_b]
 SET C, [1+J]
 SET X, [J]
+SET Y, [A]
+SET Z, [B]
+SET I, [C]
+SET J, [3+J]
 :_L3
+SET J, POP   ;restore previous frame pointer
+ADD SP, 2    ;popping locals and register arguments from stack
+SET PC, POP
+:_global_main
+SET J, SP    ;set new frame pointer
+SET PUSH, 0  ;making room on stack for outgoing arguments
+SET A, 1
+SET B, 2
+SET C, 3
+SET PEEK, 4
+JSR _global_test
+SET EX, POP  ;popping arguments from stack
+:_L12
 SUB PC, 1
